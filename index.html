@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyTrack AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0a0f; --sur:#13131a; --sur2:#1c1c28; --bor:#2a2a3d;
+  --acc:#6c63ff; --acc2:#ff6584; --acc3:#43e97b; --acc4:#f7971e;
+  --txt:#e8e8f0; --txt2:#9090a8; --txt3:#5a5a72;
+  --ok:#43e97b; --bad:#ff6584; --glow:rgba(108,99,255,.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:16px;}
+body{background:var(--bg);color:var(--txt);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 80% 10%,rgba(108,99,255,.08),transparent 60%),radial-gradient(ellipse 40% 30% at 10% 90%,rgba(67,233,123,.05),transparent 50%);pointer-events:none;z-index:0;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--acc);border-radius:3px;}
+
+.screen{display:none;min-height:100vh;position:relative;z-index:1;}
+.screen.active{display:flex;flex-direction:column;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 36px;border-bottom:1px solid var(--bor);background:rgba(10,10,15,.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:100;}
+.logo{font-weight:800;font-size:1.15rem;letter-spacing:-.02em;}
+.logo span{color:var(--acc);}
+.tag{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.15em;color:var(--acc);background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.3);padding:4px 10px;border-radius:2px;text-transform:uppercase;}
+
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border:none;border-radius:4px;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:all .18s;letter-spacing:.03em;}
+.btn-primary{background:var(--acc);color:#fff;box-shadow:0 0 24px var(--glow);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 36px var(--glow);}
+.btn-outline{background:transparent;color:var(--txt);border:1px solid var(--bor);}
+.btn-outline:hover{border-color:var(--acc);color:var(--acc);}
+.btn-sm{padding:8px 16px;font-size:.8rem;}
+
+.card{background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:22px;}
+
+/* DASHBOARD */
+.dash-body{padding:36px;max-width:1180px;margin:0 auto;width:100%;}
+.dash-head{margin-bottom:32px;}
+.dash-head h2{font-size:1.9rem;font-weight:800;letter-spacing:-.02em;}
+.dash-head p{color:var(--txt2);margin-top:4px;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px;}
+.stat-card{background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:18px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.stat-card.s1::before{background:var(--acc);}
+.stat-card.s2::before{background:var(--acc3);}
+.stat-card.s3::before{background:var(--acc4);}
+.stat-card.s4::before{background:var(--acc2);}
+.stat-v{font-size:1.9rem;font-weight:800;font-family:'DM Mono',monospace;margin-bottom:2px;}
+.stat-l{color:var(--txt2);font-size:.75rem;letter-spacing:.04em;}
+.dash-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:22px;}
+.sec-title{font-size:1rem;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--bor);}
+.subj-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.subj-card{background:var(--sur2);border:1px solid var(--bor);border-radius:8px;padding:18px;cursor:pointer;transition:all .18s;}
+.subj-card:hover{border-color:var(--acc);transform:translateY(-2px);}
+.subj-card.sel{border-color:var(--acc);background:rgba(108,99,255,.1);}
+.subj-icon{font-size:1.7rem;margin-bottom:6px;}
+.subj-name{font-weight:700;font-size:.9rem;}
+.subj-count{color:var(--txt2);font-size:.72rem;margin-top:2px;}
+.subj-bar{height:3px;background:var(--bor);border-radius:2px;margin-top:10px;overflow:hidden;}
+.subj-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .8s ease;}
+.hist-list{display:flex;flex-direction:column;gap:8px;}
+.hist-item{display:flex;align-items:center;gap:14px;padding:11px 14px;background:var(--sur2);border:1px solid var(--bor);border-radius:6px;}
+.hist-pct{font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;min-width:44px;}
+.hist-info{flex:1;}
+.hist-sub{font-weight:600;font-size:.88rem;}
+.hist-date{color:var(--txt3);font-size:.72rem;margin-top:1px;}
+.badge{font-size:.68rem;font-weight:700;padding:3px 8px;border-radius:2px;letter-spacing:.04em;white-space:nowrap;}
+.b-exc{background:rgba(67,233,123,.15);color:var(--acc3);}
+.b-good{background:rgba(108,99,255,.15);color:var(--acc);}
+.b-reg{background:rgba(247,151,30,.15);color:var(--acc4);}
+.b-weak{background:rgba(255,101,132,.15);color:var(--acc2);}
+
+/* CONFIG */
+#screen-config .inner{flex:1;display:flex;justify-content:center;align-items:center;padding:40px 20px;}
+.cfg-box{width:100%;max-width:540px;}
+.cfg-box h2{font-size:1.7rem;font-weight:800;margin:12px 0 4px;}
+.cfg-box p{color:var(--txt2);margin-bottom:28px;}
+.cfg-subj{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(108,99,255,.1);border:1px solid rgba(108,99,255,.3);border-radius:6px;margin-bottom:22px;}
+.opt-group{margin-bottom:20px;}
+.opt-label{display:block;font-size:.75rem;font-weight:600;letter-spacing:.1em;color:var(--txt2);margin-bottom:10px;text-transform:uppercase;}
+.pills{display:flex;gap:8px;flex-wrap:wrap;}
+.pill{padding:9px 18px;border:1px solid var(--bor);border-radius:4px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:600;font-size:.82rem;background:var(--sur);color:var(--txt2);transition:all .15s;}
+.pill:hover{border-color:var(--acc);color:var(--acc);}
+.pill.on{background:var(--acc);border-color:var(--acc);color:#fff;}
+.mode-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.mode-card{padding:14px;border:1px solid var(--bor);border-radius:6px;cursor:pointer;background:var(--sur);transition:all .15s;text-align:center;}
+.mode-card:hover{border-color:var(--acc);}
+.mode-card.on{border-color:var(--acc);background:rgba(108,99,255,.1);}
+.mi{font-size:1.3rem;margin-bottom:4px;}
+.mn{font-weight:700;font-size:.88rem;}
+.md{font-size:.72rem;color:var(--txt2);margin-top:2px;}
+
+/* QUIZ */
+.qz-header{display:flex;align-items:center;gap:20px;padding:14px 36px;border-bottom:1px solid var(--bor);}
+.qz-meta{flex:1;display:flex;align-items:center;gap:16px;}
+.qz-subj{font-size:.8rem;font-weight:700;color:var(--acc);}
+.qz-cnt{font-family:'DM Mono',monospace;font-size:.82rem;color:var(--txt2);}
+.qz-mode{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--txt3);}
+.score-live{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:.82rem;}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
+.dok{background:var(--ok);}
+.dbad{background:var(--bad);}
+.timer{font-family:'DM Mono',monospace;font-size:1.05rem;padding:7px 14px;background:var(--sur);border:1px solid var(--bor);border-radius:4px;min-width:72px;text-align:center;}
+.prog-wrap{height:3px;background:var(--bor);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .4s ease;}
+.qz-body{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:36px 20px;max-width:740px;margin:0 auto;width:100%;}
+.q-num{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--txt3);margin-bottom:12px;align-self:flex-start;}
+.q-topic-tag{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;align-self:flex-start;}
+.q-text{font-size:1.3rem;font-weight:700;line-height:1.45;margin-bottom:28px;width:100%;}
+.opts{display:flex;flex-direction:column;gap:10px;width:100%;}
+.opt{padding:14px 18px;border:1px solid var(--bor);border-radius:6px;cursor:pointer;background:var(--sur);transition:all .14s;display:flex;align-items:center;gap:14px;font-size:.92rem;font-weight:500;}
+.opt:hover:not(.disabled){border-color:var(--acc);background:rgba(108,99,255,.08);}
+.opt.correct{border-color:var(--ok);background:rgba(67,233,123,.1);color:var(--ok);}
+.opt.wrong{border-color:var(--bad);background:rgba(255,101,132,.1);color:var(--bad);}
+.opt.disabled{cursor:default;}
+.opt-let{width:26px;height:26px;border-radius:50%;border:1px solid var(--bor);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;font-family:'DM Mono',monospace;transition:all .14s;}
+.opt.correct .opt-let{background:var(--ok);border-color:var(--ok);color:#000;}
+.opt.wrong .opt-let{background:var(--bad);border-color:var(--bad);color:#fff;}
+.expl{margin-top:18px;padding:14px 18px;background:rgba(108,99,255,.06);border:1px solid rgba(108,99,255,.2);border-left:3px solid var(--acc);border-radius:4px;font-size:.88rem;color:var(--txt2);line-height:1.6;animation:fadeUp .3s ease;}
+.expl strong{color:var(--txt);}
+.qz-nav{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:28px;}
+.fb-ok{color:var(--ok);font-weight:700;font-size:.88rem;}
+.fb-bad{color:var(--bad);font-weight:700;font-size:.88rem;}
+
+/* RESULTADOS */
+#screen-res .inner{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:36px 20px;overflow-y:auto;}
+.res-box{width:100%;max-width:660px;}
+.res-head{text-align:center;margin-bottom:36px;}
+.ring-wrap{width:130px;height:130px;margin:0 auto 16px;position:relative;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--bor);stroke-width:8;}
+.ring-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-pct{font-size:1.9rem;font-weight:800;font-family:'DM Mono',monospace;}
+.ring-lbl{font-size:.65rem;color:var(--txt2);}
+.res-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.met-card{background:var(--sur);border:1px solid var(--bor);border-radius:6px;padding:14px;text-align:center;}
+.met-v{font-size:1.45rem;font-weight:800;font-family:'DM Mono',monospace;margin-bottom:3px;}
+.met-l{font-size:.72rem;color:var(--txt2);}
+.t-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bor);}
+.t-row:last-child{border-bottom:none;}
+.t-name{flex:1;font-size:.88rem;font-weight:500;}
+.t-bar{width:72px;height:4px;background:var(--bor);border-radius:2px;overflow:hidden;}
+.t-fill{height:100%;border-radius:2px;transition:width 1s ease;}
+.fg{background:var(--ok);}
+.fm{background:var(--acc4);}
+.fb2{background:var(--bad);}
+.t-pct{font-family:'DM Mono',monospace;font-size:.82rem;min-width:38px;text-align:right;}
+.rev-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--sur2);border:1px solid var(--bor);border-radius:6px;margin-bottom:8px;}
+.rev-icon{font-size:.95rem;flex-shrink:0;margin-top:2px;}
+.rev-q{font-size:.82rem;line-height:1.4;}
+.a-ok{font-size:.75rem;margin-top:3px;color:var(--ok);}
+.a-bad{font-size:.75rem;margin-top:3px;color:var(--bad);}
+.res-actions{display:flex;gap:12px;justify-content:center;margin-top:20px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fadein{animation:fadeUp .4s ease both;}
+
+@media(max-width:768px){
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .dash-grid{grid-template-columns:1fr;}
+  .topbar,.qz-header{padding:12px 18px;}
+  .dash-body{padding:18px;}
+  .qz-body{padding:22px 14px;}
+  .q-text{font-size:1.1rem;}
+}
+@media(max-width:480px){
+  .subj-grid{grid-template-columns:1fr;}
+  .mode-wrap{grid-template-columns:1fr;}
+  .res-metrics{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<div id="screen-dash" class="screen active">
+  <div class="topbar">
+    <div class="logo">Study<span>Track</span> AI</div>
+    <span class="tag">v1.0 Demo</span>
+  </div>
+  <div class="dash-body">
+    <div class="dash-head fadein">
+      <h2>¡Bienvenido a StudyTrack AI!</h2>
+      <p>Selecciona una materia y empieza a practicar</p>
+    </div>
+    <div class="stats-row fadein">
+      <div class="stat-card s1"><div class="stat-v" id="st-total">0</div><div class="stat-l">Intentos totales</div></div>
+      <div class="stat-card s2"><div class="stat-v" id="st-avg">—%</div><div class="stat-l">Precisión promedio</div></div>
+      <div class="stat-card s3"><div class="stat-v" id="st-best">—%</div><div class="stat-l">Mejor puntuación</div></div>
+      <div class="stat-card s4"><div class="stat-v" id="st-streak">0🔥</div><div class="stat-l">Racha de estudio</div></div>
+    </div>
+    <div class="dash-grid">
+      <div>
+        <div class="sec-title">Materias disponibles</div>
+        <div class="subj-grid" id="subj-grid"></div>
+        <div style="margin-top:22px;">
+          <button class="btn btn-primary" id="btn-start">Comenzar práctica →</button>
+        </div>
+      </div>
+      <div>
+        <div class="sec-title">Historial reciente</div>
+        <div class="hist-list" id="hist-list">
+          <div style="color:var(--txt3);font-size:.83rem;text-align:center;padding:18px">Sin intentos aún. ¡Empieza!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-config" class="screen">
+  <div class="topbar">
+    <div class="logo">Study<span>Track</span> AI</div>
+    <button class="btn btn-outline btn-sm" id="cfg-back">← Volver</button>
+  </div>
+  <div class="inner">
+    <div class="cfg-box card fadein">
+      <span class="tag">Configuración</span>
+      <h2>Configura tu sesión</h2>
+      <p>Elige cómo quieres practicar hoy</p>
+      <div class="cfg-subj">
+        <div id="cfg-icon" style="font-size:1.4rem"></div>
+        <div>
+          <div id="cfg-name" style="font-weight:700;font-size:.95rem"></div>
+          <div id="cfg-qcount" style="font-size:.72rem;color:var(--txt2)"></div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <span class="opt-label">Cantidad de preguntas</span>
+        <div class="pills" id="qty-pills">
+          <div class="pill on" data-val="5">5</div>
+          <div class="pill" data-val="10">10</div>
+          <div class="pill" data-val="15">15</div>
+          <div class="pill" data-val="20">20</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <span class="opt-label">Dificultad</span>
+        <div class="pills" id="diff-pills">
+          <div class="pill on" data-val="all">Todas</div>
+          <div class="pill" data-val="easy">Fácil</div>
+          <div class="pill" data-val="medium">Media</div>
+          <div class="pill" data-val="hard">Difícil</div>
+        </div>
+      </div>
+      <div class="opt-group">
+        <span class="opt-label">Modo</span>
+        <div class="mode-wrap" id="mode-wrap">
+          <div class="mode-card on" data-val="study">
+            <div class="mi">📖</div><div class="mn">Modo Estudio</div>
+            <div class="md">Respuesta + explicación al instante</div>
+          </div>
+          <div class="mode-card" data-val="exam">
+            <div class="mi">📝</div><div class="mn">Modo Examen</div>
+            <div class="md">Resultados solo al final</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-quiz-start" style="width:100%;margin-top:8px;font-size:1rem;padding:14px;">¡Empezar! →</button>
+    </div>
+  </div>
+</div>
+
+<div id="screen-quiz" class="screen">
+  <div class="qz-header">
+    <div class="qz-meta">
+      <span class="qz-subj" id="qz-subj"></span>
+      <span class="qz-cnt" id="qz-cnt">1/10</span>
+      <span class="qz-mode" id="qz-mode"></span>
+    </div>
+    <div class="score-live">
+      <span class="dot dok"></span><span id="qz-ok">0</span>
+      <span class="dot dbad" style="margin-left:8px"></span><span id="qz-bad">0</span>
+    </div>
+    <div class="timer" id="qz-timer">0:00</div>
+  </div>
+  <div class="prog-wrap"><div class="prog-fill" id="qz-prog" style="width:0%"></div></div>
+  <div class="qz-body">
+    <div class="q-num" id="q-num">PREGUNTA 01</div>
+    <div class="q-topic-tag" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="opts" id="opts"></div>
+    <div class="expl" id="expl" style="display:none"></div>
+    <div class="qz-nav">
+      <div id="q-fb"></div>
+      <button class="btn btn-primary" id="btn-next" style="display:none">Siguiente →</button>
+    </div>
+  </div>
+</div>
+
+<div id="screen-res" class="screen">
+  <div class="topbar">
+    <div class="logo">Study<span>Track</span> AI</div>
+    <span class="tag" id="res-subj-tag"></span>
+  </div>
+  <div class="inner">
+    <div class="res-box fadein">
+      <div class="res-head">
+        <div class="ring-wrap">
+          <svg width="130" height="130" viewBox="0 0 130 130">
+            <circle class="ring-bg" cx="65" cy="65" r="54"/>
+            <circle class="ring-fill" id="ring" cx="65" cy="65" r="54" stroke-dasharray="339" stroke-dashoffset="339"/>
+          </svg>
+          <div class="ring-center">
+            <div class="ring-pct" id="res-pct">0%</div>
+            <div class="ring-lbl">PRECISIÓN</div>
+          </div>
+        </div>
+        <div style="font-size:1.05rem;font-weight:700;margin-bottom:6px" id="res-badge"></div>
+        <div style="color:var(--txt2);font-size:.88rem" id="res-msg"></div>
+      </div>
+      <div class="res-metrics">
+        <div class="met-card"><div class="met-v" id="r-ok" style="color:var(--ok)">0</div><div class="met-l">Correctas</div></div>
+        <div class="met-card"><div class="met-v" id="r-bad" style="color:var(--bad)">0</div><div class="met-l">Incorrectas</div></div>
+        <div class="met-card"><div class="met-v" id="r-time" style="color:var(--acc)">0s</div><div class="met-l">Tiempo promedio</div></div>
+      </div>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="sec-title" style="font-size:.95rem">Análisis por tema</div>
+        <div id="topic-rows"></div>
+      </div>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="sec-title" style="font-size:.95rem">Revisión de preguntas</div>
+        <div id="rev-list"></div>
+      </div>
+      <div class="res-actions">
+        <button class="btn btn-outline" id="btn-dash">← Dashboard</button>
+        <button class="btn btn-primary" id="btn-retry">Intentar de nuevo →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+(function(){
+
+var SUBJECTS = [
+  { id:'db',  name:'Bases de Datos',    icon:'🗄️' },
+  { id:'sys', name:'Análisis de Sist.', icon:'📊' }
+];
+
+var QB = {
+  db: [
+    // I. Fundamentos
+    {topic:'Fundamentos', diff:'easy', text:'¿Cuál es el enfoque principal de las bases de datos SQL (Relacionales)?', opts:['Almacenamiento de archivos multimedia en la nube','Se centran en ser una tecnología estándar con una estructura clara, definida y rígida','Flexibilidad total sin esquema predefinido','Procesamiento en tiempo real de nodos y grafos'], ans:1, exp:'Se centran en ser una tecnología estándar con una estructura clara, definida y rígida para el almacenamiento de datos.'},
+    {topic:'Fundamentos', diff:'medium', text:'¿Qué ventajas técnicas ofrece SQL respecto a la fiabilidad?', opts:['Ofrece alta consistencia e integridad mediante relaciones complejas y estándares','Permite inconsistencias temporales a cambio de velocidad extrema','No requiere copias de seguridad gracias a su arquitectura','Garantiza fiabilidad al no usar claves primarias'], ans:0, exp:'Ofrece alta consistencia e integridad, asegurando que los datos sean fiables mediante relaciones complejas y estándares de décadas.'},
+    {topic:'Arquitectura', diff:'hard', text:'¿Cómo se define el escalamiento en NoSQL frente a SQL?', opts:['Ambas usan escalabilidad vertical exclusivamente','SQL usa Escalabilidad Horizontal, NoSQL usa Escalabilidad Vertical','NoSQL usa Escalabilidad Horizontal (más servidores), SQL suele usar Vertical (más potencia)','Ambas usan escalabilidad horizontal mediante microservicios'], ans:2, exp:'NoSQL usa Escalabilidad Horizontal (más servidores), mientras que SQL suele usar Escalabilidad Vertical (más potencia en un solo servidor).'},
+    {topic:'Arquitectura', diff:'medium', text:'¿Qué es la "Integridad Eventual" en el modelo NoSQL?', opts:['Un error de diseño que corrompe los datos a largo plazo','El bloqueo de tablas para evitar escrituras simultáneas','La garantía de que los datos siempre coinciden en el milisegundo exacto','Un enfoque que prioriza el rendimiento y disponibilidad en Big Data sobre la consistencia inmediata'], ans:3, exp:'Es un enfoque que prioriza el rendimiento y la disponibilidad en Big Data sobre la consistencia inmediata de los datos.'},
+    {topic:'Fundamentos', diff:'easy', text:'¿Qué representa el lenguaje SQL en la interacción humano-datos?', opts:['System Queue Logic','Structured Query Language, el puente estándar para definir, manipular y controlar datos','Standard Query Link para bases de datos no relacionales','Simple Question Language para usuarios sin experiencia'], ans:1, exp:'Es el Structured Query Language, el puente estándar para definir, manipular y controlar datos.'},
+    {topic:'Estructura', diff:'easy', text:'¿Cuáles son los componentes de "La Tabla" en el modelo relacional?', opts:['Nodos y Vértices','Clases y Objetos','Campos (columnas/categorías) y Registros (filas/datos específicos)','Documentos y Colecciones'], ans:2, exp:'Se compone de Campos (columnas/categorías) y Registros (filas/datos específicos).'},
+    {topic:'Sintaxis', diff:'medium', text:'¿Cuáles son los 4 pilares (sublenguajes) de SQL?', opts:['HTML, CSS, JS, PHP','SELECT, INSERT, UPDATE, DELETE','DDL (Estructura), DML (Datos), DCL (Permisos) y TCL (Transacciones)','CREATE, READ, UPDATE, DELETE'], ans:2, exp:'DDL (Estructura), DML (Datos), DCL (Permisos) y TCL (Transacciones).'},
+    
+    // II. DDL
+    {topic:'DDL', diff:'medium', text:'¿Cuál es el propósito de las sentencias DDL?', opts:['Insertar registros masivos en la base de datos','Otorgar y revocar permisos a los usuarios del sistema','Definir, modificar y gestionar la estructura física de la base de datos (tablas, índices)','Crear copias de seguridad automáticas'], ans:2, exp:'Definir, modificar y gestionar la estructura física de la base de datos (tablas, índices, etc.).'},
+    {topic:'DDL', diff:'easy', text:'¿Para qué sirve el comando CREATE?', opts:['Para crear nuevos objetos como tablas, vistas o procedimientos almacenados','Para insertar un nuevo registro en una tabla existente','Para generar un nuevo usuario temporal','Para crear una relación temporal entre dos consultas'], ans:0, exp:'Para crear nuevos objetos como tablas, vistas o procedimientos almacenados.'},
+    {topic:'DDL', diff:'medium', text:'¿Cómo funciona la sentencia ALTER?', opts:['Elimina objetos de la base de datos permanentemente','Permite modificar objetos existentes, como agregar o cambiar columnas en una tabla','Intercambia los datos de dos tablas diferentes','Altera el orden de los resultados de un SELECT'], ans:1, exp:'Permite modificar objetos existentes, como agregar o cambiar columnas en una tabla.'},
+    {topic:'DDL', diff:'hard', text:'¿Cuál es el riesgo del comando DROP?', opts:['Oculta la tabla a los usuarios sin privilegios','Es una acción irreversible que elimina el objeto y todos sus datos permanentemente','Solo borra la estructura, dejando los datos intactos','Bloquea la tabla temporalmente durante una transacción'], ans:1, exp:'Es una acción irreversible que elimina el objeto y todos sus datos permanentemente.'},
+    {topic:'DDL', diff:'hard', text:'¿Qué diferencia a TRUNCATE de DELETE?', opts:['DELETE es un comando DDL y TRUNCATE es DML','TRUNCATE se puede deshacer con ROLLBACK, DELETE no','TRUNCATE vacía la tabla sin registrar filas individuales (más eficiente pero menos selectivo)','DELETE borra la estructura de la tabla, TRUNCATE solo los datos'], ans:2, exp:'TRUNCATE es un "reinicio rápido": vacía la tabla sin registrar filas individuales, siendo más eficiente pero menos selectivo.'},
+    
+    // III. DML
+    {topic:'DML', diff:'easy', text:'¿Qué hace la instrucción INSERT INTO?', opts:['Actualiza datos existentes en la tabla','Es la puerta de entrada de los datos; agrega nuevas filas a una tabla','Crea una nueva tabla para insertar datos','Busca datos específicos dentro de una base de datos'], ans:1, exp:'Es la puerta de entrada de los datos; agrega nuevas filas a una tabla.'},
+    {topic:'DML', diff:'medium', text:'¿Cuáles son las 3 partes de una sintaxis de inserción?', opts:['El SELECT, el FROM y el WHERE','La Base de datos, la Tabla y la Fila','El Destino (tabla), el Mapa de Campos (columnas) y el Payload (valores)','El CREATE, el ALTER y el DROP'], ans:2, exp:'El Destino (tabla), el Mapa de Campos (columnas) y el Payload (valores).'},
+    {topic:'DML', diff:'hard', text:'¿Qué es la "Regla de Correspondencia" en inserciones?', opts:['Las primary keys deben coincidir con las foreign keys','El orden, tipo de dato y cantidad de valores deben coincidir exactamente con las columnas declaradas','El nombre de la tabla debe coincidir con el nombre de la base de datos','Los valores de texto deben estar siempre en mayúsculas'], ans:1, exp:'El orden, tipo de dato y cantidad de valores deben coincidir exactamente con las columnas declaradas.'},
+    {topic:'DML', diff:'medium', text:'¿Qué columnas NO deben insertarse manualmente?', opts:['Columnas de tipo VARCHAR o TEXT','Campos IDENTITY (autoincrementales), columnas Calculadas o generadas por el sistema','Columnas que aceptan valores NULL','Las Claves Foráneas (Foreign Keys)'], ans:1, exp:'Campos IDENTITY (autoincrementales), columnas Calculadas o las generadas por el sistema.'},
+    {topic:'Integridad', diff:'easy', text:'¿Qué garantiza una Clave Primaria (Primary Key)?', opts:['Cifra la información por seguridad','Identifica de forma única cada fila, prohíbe duplicados y no acepta valores NULL','Permite valores duplicados pero no valores vacíos','Vincula la tabla con una base de datos externa'], ans:1, exp:'Identifica de forma única cada fila, prohíbe duplicados y no acepta valores NULL.'},
+    {topic:'Integridad', diff:'medium', text:'¿Qué es una Clave Foránea (Foreign Key)?', opts:['El identificador principal de una tabla','Un campo que vincula una tabla hija con una tabla padre, garantizando integridad referencial','Una contraseña para acceder a la base de datos','Una columna temporal generada en un SELECT'], ans:1, exp:'Un campo que vincula una tabla hija con una tabla padre, garantizando integridad referencial.'},
+    {topic:'Integridad', diff:'easy', text:'¿Diferencia entre NULL y NOT NULL?', opts:['NULL es cero, NOT NULL es cualquier otro número','NULL borra el dato, NOT NULL lo recupera','NOT NULL hace que el dato sea obligatorio; NULL permite dejar el espacio vacío','NOT NULL es para texto, NULL es para números'], ans:2, exp:'NOT NULL hace que el dato sea obligatorio; NULL permite dejar el espacio vacío.'},
+    {topic:'DML', diff:'easy', text:'¿Cómo se escriben los datos de Texto y Fecha en SQL?', opts:['Entre comillas dobles (ejemplo: "2024-03-02")','Entre corchetes (ejemplo: [2024-03-02])','Siempre deben ir entre comillas simples (ejemplo: \'2024-03-02\')','Sin ningún símbolo especial (ejemplo: 2024-03-02)'], ans:2, exp:'Siempre deben ir entre comillas simples (ejemplo: \'2024-03-02\').'},
+    {topic:'DML', diff:'hard', text:'¿Qué riesgo tiene el comando UPDATE?', opts:['Si se omite la cláusula WHERE, se actualizarán todos los registros de la tabla','Puede borrar la tabla permanentemente','Sobrescribe la clave primaria automáticamente','No funciona con datos de tipo fecha'], ans:0, exp:'Si se omite la cláusula WHERE, se actualizarán todos los registros de la tabla.'},
+    {topic:'DML', diff:'hard', text:'¿Cómo afecta la integridad referencial al DELETE?', opts:['El comando DELETE no respeta la integridad referencial','Borra automáticamente las tablas relacionadas (Cascada por defecto siempre)','El motor bloqueará la eliminación si el registro está siendo referenciado por otra tabla','Convierte las referencias en valores NULL antes de borrar'], ans:2, exp:'El motor bloqueará la eliminación si el registro está siendo referenciado por otra tabla.'},
+    {topic:'DML', diff:'medium', text:'¿Cuál es el "Pro Tip" antes de ejecutar un DELETE?', opts:['Apagar el servidor de base de datos','Ejecutar primero un SELECT con el mismo WHERE para verificar qué se va a borrar','Usar TRUNCATE en su lugar','Cambiar todos los datos a NULL primero'], ans:1, exp:'Ejecutar primero un SELECT con el mismo WHERE para verificar qué se va a borrar.'},
+    {topic:'Seguridad', diff:'easy', text:'¿Qué responsabilidad implica manipular producción?', opts:['Ninguna, SQL repara errores solo','Asegurarse de tener siempre copias de seguridad (backups) antes de cambios masivos','Avisar al equipo de marketing','Usar siempre el usuario root/admin'], ans:1, exp:'Asegurarse de tener siempre copias de seguridad (backups) antes de cambios masivos.'},
+    
+    // IV. DQL
+    {topic:'DQL', diff:'medium', text:'¿Por qué evitar SELECT *?', opts:['Porque causa errores de sintaxis en consultas largas','Para optimizar el rendimiento, reducir carga en red y evitar procesar datos innecesarios','Porque devuelve los registros en orden aleatorio','Porque es un comando obsoleto en SQL moderno'], ans:1, exp:'Para optimizar el rendimiento, reducir carga en red y evitar procesar datos innecesarios.'},
+    {topic:'DQL', diff:'easy', text:'¿Para qué sirve la cláusula DISTINCT?', opts:['Para ordenar los resultados alfabéticamente','Para eliminar duplicados y devolver solo valores únicos en el resultado','Para unir dos tablas distintas','Para filtrar resultados por fecha'], ans:1, exp:'Para eliminar duplicados y devolver solo valores únicos en el resultado.'},
+    {topic:'DQL', diff:'easy', text:'¿Qué función cumple WHERE?', opts:['Agrupa los resultados por categorías','Ordena los datos de mayor a menor','Actúa como un filtro que solo deja pasar las filas que cumplen una condición específica','Selecciona las columnas a mostrar'], ans:2, exp:'Actúa como un filtro que solo deja pasar las filas que cumplen una condición específica.'},
+    {topic:'DQL', diff:'hard', text:'¿Qué hacen TOP, PERCENT y WITH TIES?', opts:['Agrupan, filtran y ordenan datos, respectivamente','TOP limita filas, PERCENT devuelve un porcentaje y WITH TIES incluye empates del último valor','Crean tablas temporales con los mejores resultados','Son funciones matemáticas para calcular promedios'], ans:1, exp:'TOP limita filas, PERCENT devuelve un porcentaje y WITH TIES incluye empates del último valor.'},
+    {topic:'DQL', diff:'hard', text:'¿Cuál es la secuencia obligatoria de la "Sintaxis Maestra" de consulta?', opts:['1. FROM, 2. WHERE, 3. SELECT, 4. ORDER BY','1. SELECT, 2. Columnas, 3. FROM, 4. Tabla, 5. WHERE, 6. Condición, 7. ORDER BY','1. SELECT, 2. ORDER BY, 3. FROM, 4. WHERE','El orden de las cláusulas no importa en SQL'], ans:1, exp:'1. SELECT, 2. Columnas, 3. FROM, 4. Tabla, 5. WHERE, 6. Condición, 7. ORDER BY.'},
+    
+    // V. TCL y DCL
+    {topic:'TCL', diff:'medium', text:'¿Qué hacen COMMIT y ROLLBACK?', opts:['Crean y borran usuarios de la base de datos','Conectan y desconectan el servidor','COMMIT guarda cambios permanentemente; ROLLBACK deshace los cambios si hubo un error','Encienden y apagan el registro de logs'], ans:2, exp:'COMMIT guarda cambios permanentemente; ROLLBACK deshace los cambios si hubo un error.'},
+    {topic:'TCL', diff:'hard', text:'¿Para qué sirve SAVEPOINT?', opts:['Para guardar una consulta en un archivo de texto','Crea un hito dentro de una transacción para poder volver a él sin deshacerlo todo','Para exportar la base de datos a un archivo .sql','Para establecer un punto de restauración automático diario'], ans:1, exp:'Crea un hito dentro de una transacción para poder volver a él sin deshacerlo todo.'},
+    {topic:'DCL', diff:'medium', text:'¿Qué comandos forman el DCL (Data Control Language)?', opts:['INSERT y UPDATE','COMMIT y ROLLBACK','GRANT (dar permisos) y REVOKE (quitar permisos)','CREATE y DROP'], ans:2, exp:'GRANT (dar permisos) y REVOKE (quitar permisos).'},
+    
+    // VI. Joins y Subconsultas
+    {topic:'Joins', diff:'hard', text:'¿Cuál es el orden lógico de 5 pasos para construir una consulta compleja?', opts:['1. WHERE, 2. SELECT, 3. FROM, 4. JOIN, 5. ON','1. JOIN, 2. ON, 3. SELECT, 4. FROM, 5. WHERE','1. SELECT, 2. FROM (tabla base), 3. JOIN, 4. ON (relación), 5. WHERE','1. SELECT, 2. JOIN, 3. WHERE, 4. ON, 5. FROM'], ans:2, exp:'1. SELECT, 2. FROM (tabla base), 3. JOIN, 4. ON (relación), 5. WHERE.'},
+    {topic:'Joins', diff:'medium', text:'¿Qué es un INNER JOIN?', opts:['Trae todo de la tabla derecha y coincidencias de la izquierda','Une todas las filas creando un producto cartesiano','Devuelve solo los registros que tienen coincidencia en ambas tablas (intersección)','Muestra los registros que NO tienen coincidencia'], ans:2, exp:'Devuelve solo los registros que tienen coincidencia en ambas tablas (intersección).'},
+    {topic:'Joins', diff:'medium', text:'¿Cómo funciona un LEFT JOIN?', opts:['Trae todo de la tabla izquierda y lo que coincida de la derecha; lo demás queda como NULL','Devuelve solo las coincidencias exactas entre tablas','Da prioridad absoluta a la tabla de la derecha','Excluye los registros de la tabla izquierda'], ans:0, exp:'Trae todo de la tabla izquierda y lo que coincida de la derecha; lo demás queda como NULL.'},
+    {topic:'Joins', diff:'easy', text:'¿Qué sucede en un RIGHT JOIN?', opts:['Es igual al INNER JOIN pero más rápido','Es el opuesto al Left: prioridad absoluta a la tabla de la derecha','Solo trae los datos nulos de ambas tablas','Devuelve un producto cartesiano hacia la derecha'], ans:1, exp:'Es el opuesto al Left: prioridad absoluta a la tabla de la derecha.'},
+    {topic:'Joins', diff:'hard', text:'¿Qué es el "Producto Cartesiano" y cómo se evita?', opts:['Es una función matemática, se evita usando SUM()','Es un error que multiplica filas de ambas tablas; se evita usando siempre la cláusula ON en el Join','Es la agrupación de datos, se evita con GROUP BY','Es el ordenamiento invertido, se evita con DESC'], ans:1, exp:'Es un error que multiplica filas de ambas tablas; se evita usando siempre la cláusula ON en el Join.'},
+    {topic:'Sintaxis', diff:'medium', text:'¿Para qué sirven los Alias (ej. FROM estudiantes e)?', opts:['Para ocultar el nombre real de la tabla por seguridad','Para cambiar el nombre de la tabla en la base de datos permanentemente','Para simplificar la escritura y evitar el error de "Columnas Ambiguas"','Para permitir valores duplicados en consultas JOIN'], ans:2, exp:'Para simplificar la escritura y evitar el error de "Columnas Ambiguas".'},
+    {topic:'Subconsultas', diff:'medium', text:'¿Qué es una Subconsulta?', opts:['Una tabla temporal creada en memoria RAM','Una consulta de respaldo ejecutada por seguridad','Es una consulta anidada dentro de otra (una pregunta para responder la principal)','Un JOIN entre tres o más tablas'], ans:2, exp:'Es una consulta anidada dentro de otra (una pregunta para responder la principal).'},
+    {topic:'Subconsultas', diff:'hard', text:'¿Qué es una Subconsulta Escalar?', opts:['Aquella que devuelve múltiples columnas y filas','Aquella que devuelve un solo valor (ej. el promedio de notas) para ser comparado','Una consulta que se escala a varios servidores','Una consulta que usa la cláusula ORDER BY'], ans:1, exp:'Aquella que devuelve un solo valor (ej. el promedio de notas) para ser comparado.'},
+    {topic:'Subconsultas', diff:'hard', text:'¿Qué es una Subconsulta de Lista?', opts:['Devuelve una columna de valores y suele usarse con el operador IN','Devuelve un único valor escalar','Es una vista materializada de una tabla','Es una consulta que solo usa INNER JOIN'], ans:0, exp:'Devuelve una columna de valores y suele usarse con el operador IN.'},
+    {topic:'Subconsultas', diff:'hard', text:'¿Para qué sirve EXISTS en subconsultas?', opts:['Para insertar registros si no existen','Para verificar si un registro existe sin necesidad de procesar todos sus datos','Para obligar a crear una tabla si falta','Para borrar datos inexistentes'], ans:1, exp:'Para verificar si un registro existe sin necesidad de procesar todos sus datos.'},
+    {topic:'Subconsultas', diff:'medium', text:'¿Cuándo usar JOIN en lugar de Subconsulta?', opts:['Cuando se necesita optimizar un borrado de datos','Cuando necesitas mostrar columnas de ambas tablas en el resultado final','Cuando la base de datos es NoSQL','Cuando solo quieres filtrar sin mostrar datos extra'], ans:1, exp:'Cuando necesitas mostrar columnas de ambas tablas en el resultado final.'},
+    {topic:'Subconsultas', diff:'medium', text:'¿Cuándo usar Subconsulta en lugar de JOIN?', opts:['Cuando necesitas mostrar datos de ambas tablas en el SELECT final','Para crear nuevas relaciones en la base de datos','Cuando solo necesitas filtrar la tabla principal basándote en otra, pero no mostrar datos de la segunda','Nunca, los JOINs siempre son mejores'], ans:2, exp:'Cuando solo necesitas filtrar la tabla principal basándote en otra, pero no mostrar datos de la segunda.'},
+    {topic:'Joins', diff:'hard', text:'¿Cómo se detectan registros faltantes (ej. alumnos sin carrera)?', opts:['Usando un INNER JOIN y filtrando por NOT NULL','Usando un LEFT JOIN y filtrando donde la llave de la derecha sea IS NULL','Usando un RIGHT JOIN sin condición ON','Usando un SELECT * con DISTINCT'], ans:1, exp:'Usando un LEFT JOIN y filtrando donde la llave de la derecha sea IS NULL.'},
+
+    // VII. Resumen
+    {topic:'Comandos Rápidos', diff:'easy', text:'¿Cuál es la acción para definir esquema?', opts:['DML -> UPDATE','DQL -> SELECT','DDL -> CREATE','TCL -> COMMIT'], ans:2, exp:'DDL -> CREATE.'},
+    {topic:'Comandos Rápidos', diff:'easy', text:'¿Cuál es la acción para extraer información?', opts:['DCL -> GRANT','DDL -> ALTER','TCL -> ROLLBACK','DML/DQL -> SELECT'], ans:3, exp:'DML/DQL -> SELECT.'},
+    {topic:'Comandos Rápidos', diff:'easy', text:'¿Cuál es la acción para cambiar valores?', opts:['DML -> UPDATE','DCL -> REVOKE','DDL -> DROP','DQL -> DISTINCT'], ans:0, exp:'DML -> UPDATE.'},
+    {topic:'Comandos Rápidos', diff:'easy', text:'¿Cuál es la acción para autorizar accesos?', opts:['DML -> INSERT','TCL -> SAVEPOINT','DCL -> GRANT','DDL -> CREATE'], ans:2, exp:'DCL -> GRANT.'},
+    {topic:'Comandos Rápidos', diff:'easy', text:'¿Cuál es la acción para anular errores en una transacción?', opts:['DML -> DELETE','DDL -> TRUNCATE','DQL -> WHERE','TCL -> ROLLBACK'], ans:3, exp:'TCL -> ROLLBACK.'}
+  ],
+  
+  sys: [
+    // Definiciones y Conceptos Base
+    {topic:'Conceptos', diff:'easy', text:'¿Qué es un requerimiento de software y cuál es su objetivo principal?', opts:['El lenguaje de programación a utilizar en el proyecto','Es una condición, capacidad o restricción que el sistema debe cumplir para satisfacer una necesidad','El diseño gráfico de la interfaz de usuario final','El presupuesto detallado para la compra de servidores'], ans:1, exp:'Es una condición, capacidad o restricción que el sistema debe cumplir para satisfacer una necesidad (explícita o implícita) del usuario o de la organización.'},
+    {topic:'Conceptos', diff:'medium', text:'¿A qué pregunta fundamental responden los requerimientos en un proyecto de ingeniería?', opts:['¿Quién va a programar el sistema y con qué framework?','¿Cuál es el costo total de la infraestructura en la nube?','¿Qué debe hacer el sistema y bajo qué condiciones?','¿Cómo se va a estructurar el código fuente de la aplicación?'], ans:2, exp:'Responden a: "¿Qué debe hacer el sistema y bajo qué condiciones?". Esto diferencia la funcionalidad esperada de la forma técnica en que se programará.'},
+    {topic:'Arquitectura', diff:'medium', text:'¿Cómo influyen los requerimientos en el diseño arquitectónico del software?', opts:['Actúan como la base que orienta la estructura del sistema, definiendo tecnologías y componentes necesarios','Solo definen los colores y estilos CSS del frontend','No influyen en la arquitectura, son procesos separados','Determinan exclusivamente el precio de venta del software'], ans:0, exp:'Actúan como la base que orienta la estructura del sistema. Sin requerimientos claros, los arquitectos no pueden decidir qué tecnologías o componentes son necesarios.'},
+    {topic:'Calidad', diff:'medium', text:'¿Por qué se dice que los requerimientos son el fundamento de las pruebas y la validación?', opts:['Porque contienen el código fuente de las pruebas automatizadas','Porque sirven como el estándar de comparación objetiva para comprobar si el sistema funciona correctamente','Porque determinan qué testers serán contratados','Porque evitan que el usuario final tenga que hacer pruebas'], ans:1, exp:'Porque sirven como el estándar de comparación. Si un requerimiento no está definido, no hay forma objetiva de probar si el sistema funciona.'},
+    {topic:'Impacto', diff:'hard', text:'¿Qué porcentaje de errores críticos se originan en la fase de análisis según Pressman y Sommerville?', opts:['Alrededor del 10%','Cerca del 25%','Aproximadamente el 90%','Más del 50%'], ans:3, exp:'Se estima que más del 50% de los errores críticos de un sistema nacen en la fase de análisis de requerimientos.'},
+    {topic:'Impacto', diff:'medium', text:'¿Qué impacto económico y legal puede tener una mala definición de requerimientos?', opts:['Ninguno, el código siempre se puede reescribir gratis','Solo afecta la estética de la aplicación web','Puede generar pérdidas financieras por cálculos erróneos y provocar conflictos legales por incumplimiento','El único impacto es un retraso de un par de días en la entrega'], ans:2, exp:'Puede generar pérdidas financieras por cálculos erróneos (como impuestos mal aplicados) y provocar conflictos legales si no se cumplen las normativas.'},
+    
+    // Dominio y Contexto
+    {topic:'Dominio', diff:'medium', text:'¿Qué define el "Dominio del Problema" en el desarrollo de software?', opts:['La URL o nombre de dominio web donde se alojará el sistema','El motor de base de datos relacional elegido para el proyecto','El lenguaje de programación utilizado en el backend','Es el entorno real donde existe una necesidad antes de pensar en cualquier tecnología'], ans:3, exp:'Es el entorno real donde existe una necesidad antes de pensar en cualquier tecnología. Es la realidad física y operativa que motiva la creación del sistema.'},
+    {topic:'Dominio', diff:'hard', text:'¿Por qué el analista debe entender que "el dominio no es el sistema"?', opts:['Porque el sistema es físico y el dominio es virtual','Porque el sistema es la solución tecnológica, mientras que el dominio es la realidad del negocio','Porque el dominio solo aplica a páginas web públicas','Porque el sistema es más importante que el dominio del cliente'], ans:1, exp:'Porque el sistema es solo la solución tecnológica, mientras que el dominio es la realidad del negocio. Confundirlos lleva a crear software que no se adapta.'},
+    {topic:'Contexto', diff:'easy', text:'¿Qué implica analizar el "Tipo de Organización" al identificar el contexto?', opts:['Saber cuántas computadoras tienen en la oficina','Conocer los nombres de todos los empleados','Entender si la entidad es educativa, comercial o pública, ya que cada tipo tiene reglas y objetivos distintos','Definir el tipo de servidor Linux a utilizar'], ans:2, exp:'Significa entender si la entidad es educativa, comercial o pública. Cada tipo tiene reglas, objetivos y usuarios con necesidades totalmente distintas.'},
+    {topic:'Contexto', diff:'medium', text:'¿Cuál es la importancia de analizar los "Procesos Actuales" de una organización?', opts:['Permite entender cómo se hacen las cosas hoy para identificar fallas y evitar automatizar procesos ineficientes','Solo sirve para despedir al personal redundante','Para copiar el código de su sistema viejo','Para aumentar el costo de la consultoría inicial'], ans:0, exp:'Permite entender cómo se hacen las cosas hoy (aunque sea de forma manual) para identificar fallas. Esto evita automatizar procesos que ya son ineficientes.'},
+    {topic:'Contexto', diff:'easy', text:'¿Qué papel juegan los "Actores Involucrados" en el análisis del contexto?', opts:['Son los programadores que escribirán el sistema','Son los inversores financieros del proyecto','Son todas las personas que interactúan con el proceso, desde el nivel operativo hasta el gerencial','Son los actores comerciales que harán la publicidad del software'], ans:2, exp:'Son todas las personas que interactúan con el proceso. Identificarlos asegura que se tomen en cuenta las necesidades de todos los niveles.'},
+    {topic:'Contexto', diff:'hard', text:'¿Por qué son críticas las "Normativas Legales" en el levantamiento de requerimientos?', opts:['Para saber si el software puede ser de código abierto o propietario','Para evadir impuestos legalmente en la compra del sistema','Porque el sistema debe operar dentro de un marco legal; ignorarlas puede hacer el software inutilizable','Para determinar si los programadores necesitan título universitario'], ans:2, exp:'Porque el sistema debe operar dentro de un marco legal (leyes laborales, fiscales, protección de datos). Ignorarlas puede hacer que el software sea inutilizable.'},
+    {topic:'Contexto', diff:'medium', text:'¿Cómo influye la "Cultura Organizacional" en el éxito de un nuevo sistema?', opts:['Define el idioma de programación que se debe usar','Define cómo aceptarán los usuarios el cambio tecnológico; si choca con sus valores, el sistema enfrentará resistencia','Solo afecta el diseño de logotipo del sistema','Determina el horario de almuerzo de los desarrolladores'], ans:1, exp:'Define cómo aceptarán los usuarios el cambio tecnológico. Un sistema que choca con la cultura o los valores de la empresa suele enfrentar resistencia y fracasar.'},
+    
+    // Problemas y Necesidades
+    {topic:'Análisis', diff:'medium', text:'¿Cómo se debe definir correctamente un problema según la metodología de análisis?', opts:['Como la falta de hardware actualizado y servidores potentes','Como la ausencia de un software moderno de gestión','Se debe describir como una situación negativa actual, sin mencionar tecnología ni soluciones','Como una lista detallada de errores de código fuente'], ans:2, exp:'Se debe describir como una situación negativa actual, sin mencionar tecnología ni soluciones. Ejemplo: "Los registros se realizan manualmente, generando errores".'},
+    {topic:'Análisis', diff:'hard', text:'¿Cuál es el error común al decir "No existe un sistema web moderno" como definición de problema?', opts:['Que la web ya no se usa, debería ser una app móvil','El error es que se está planteando la falta de una solución técnica como si fuera el problema real','Que no especifica el framework de JavaScript a utilizar','Que es demasiado extenso y descriptivo'], ans:1, exp:'El error es que se está planteando la falta de una solución técnica como si fuera el problema. El verdadero problema es la consecuencia de no tenerlo (ej. pérdida de datos).'},
+    {topic:'Análisis', diff:'hard', text:'¿Qué diferencia existe entre un "Problema", una "Necesidad" y una "Solución"?', opts:['Problema: solución actual, Necesidad: hardware, Solución: software','Problema: falla actual, Necesidad: mejora requerida, Solución: la herramienta tecnológica','Son sinónimos en la ingeniería de requerimientos','Problema: código, Necesidad: compilador, Solución: ejecución'], ans:1, exp:'Problema: La falla actual (ej. Errores en notas). Necesidad: Lo que se requiere para mejorar (ej. Control académico). Solución: La herramienta tecnológica (ej. Sistema de gestión).'},
+    
+    // Características de Requerimientos
+    {topic:'Especificación', diff:'easy', text:'¿Qué significa que un requerimiento sea "Claro"?', opts:['Que esté escrito usando lenguaje de programación','Que utiliza un lenguaje directo y evita tecnicismos innecesarios para que cliente y desarrollador lo entiendan','Que sea lo más corto posible, preferiblemente una sola palabra','Que esté impreso con buena calidad de tinta'], ans:1, exp:'Significa que utiliza un lenguaje directo y evita tecnicismos innecesarios para que tanto el cliente como el desarrollador lo entiendan perfectamente.'},
+    {topic:'Especificación', diff:'medium', text:'¿Qué caracteriza a un requerimiento "No ambiguo"?', opts:['Que solo tiene una única interpretación posible, evitando que se construya algo diferente a lo imaginado','Que permite flexibilidad para que el programador decida qué hacer','Que es muy complejo y difícil de entender','Que no requiere validación del usuario final'], ans:0, exp:'Que solo tiene una única interpretación posible. Esto evita que el desarrollador construya algo diferente a lo que el usuario imaginó.'},
+    {topic:'Especificación', diff:'medium', text:'¿Cuándo se considera que un requerimiento es "Verificable"?', opts:['Cuando el jefe de proyecto lo firma en papel','Cuando el código compila sin errores de sintaxis','Cuando existe un método objetivo (como una prueba o cálculo) para comprobar que el sistema lo cumple','Cuando se puede leer en la pantalla de inicio'], ans:2, exp:'Cuando existe un método objetivo (como una prueba o cálculo) para comprobar que el sistema efectivamente lo cumple.'},
+    {topic:'Especificación', diff:'easy', text:'¿Por qué un requerimiento debe ser "Necesario"?', opts:['Para rellenar el documento de análisis de sistemas','Porque debe aportar un valor real al negocio, de lo contrario solo añade costo y complejidad innecesaria','Para justificar la contratación de más desarrolladores','Porque es obligatorio por ley en todos los países'], ans:1, exp:'Porque debe aportar un valor real al negocio. Si un requerimiento no resuelve una necesidad o problema, solo añade costo y complejidad innecesaria al proyecto.'},
+    
+    // Alcance y Exclusiones
+    {topic:'Alcance', diff:'easy', text:'¿Qué define el "Alcance" de un sistema de software?', opts:['El presupuesto máximo del cliente en dólares','El número de líneas de código permitidas','Los límites del proyecto: qué procesos cubrirá el sistema y hasta dónde llegará su funcionalidad','La distancia física entre el servidor y el cliente'], ans:2, exp:'Establece los límites del proyecto: qué procesos cubrirá el sistema y hasta dónde llegará su funcionalidad.'},
+    {topic:'Alcance', diff:'medium', text:'¿Para qué sirven las "Exclusiones" en el documento de requerimientos?', opts:['Indican explícitamente qué tareas o módulos NO serán parte del sistema, protegiendo al equipo de solicitudes extra','Para despedir a los empleados que no son necesarios','Para borrar archivos temporales del servidor','Para listar las tecnologías que son demasiado caras para usar'], ans:0, exp:'Indican explícitamente qué tareas o módulos NO serán parte del sistema. Esto protege al equipo de desarrollo de solicitudes extra de último momento.'},
+    {topic:'Alcance', diff:'medium', text:'¿Qué riesgos se evitan al delimitar correctamente el alcance y las exclusiones?', opts:['Evita que los servidores se sobrecalienten en producción','Evita la sobrecarga de requerimientos, conflictos de expectativas con el cliente y promesas irreales','Evita que el sistema sea hackeado por agentes externos','Evita el uso de bases de datos relacionales antiguas'], ans:1, exp:'Se evita la sobrecarga de requerimientos, conflictos de expectativas con el cliente y la promesa de funciones irreales que no se pueden cumplir.'},
+    
+    // El Analista y la Estrategia
+    {topic:'Análisis', diff:'hard', text:'¿Qué significa que "el dominio cambie, pero la metodología de análisis sea la misma"?', opts:['Que siempre se usa la misma base de datos sin importar el cliente','Que los programadores nunca deben aprender nuevos lenguajes','Aunque el entorno sea distinto (clínico, comercial), los pasos lógicos para analizar problemas siguen las mismas reglas','Que el sistema final siempre tendrá la misma interfaz de usuario gráfica'], ans:2, exp:'Significa que, aunque el entorno sea educativo, comercial o clínico, los pasos para analizar problemas y necesidades siguen las mismas reglas lógicas.'},
+    {topic:'Análisis', diff:'medium', text:'¿Cuál es la función principal del analista de requerimientos en las etapas iniciales?', opts:['Comenzar a escribir la estructura de la base de datos SQL','Trabajar primero con problemas y necesidades, descubriendo el "por qué" antes de proponer soluciones o el "cómo"','Diseñar las pantallas y botones de la interfaz de usuario final','Instalar los servidores físicos en la empresa del cliente'], ans:1, exp:'Trabajar primero con problemas y necesidades, no con soluciones. Su labor es descubrir el "por qué" antes de proponer el "cómo".'},
+    {topic:'Estrategia', diff:'hard', text:'¿Qué representan las necesidades estratégicas en el desarrollo de software?', opts:['Las actualizaciones de seguridad del sistema operativo','Las funciones estéticas del frontend para atraer usuarios','Representan los factores clave del negocio que impulsan la decisión de crear el sistema, surgiendo de la estrategia organizacional','La cantidad de RAM necesaria para que el sistema funcione'], ans:2, exp:'Representan los factores clave del negocio que impulsan la decisión de desarrollar o adquirir un sistema de software, surgiendo de la estrategia organizacional.'},
+    {topic:'Estrategia', diff:'medium', text:'¿Qué objetivos institucionales reflejan las necesidades estratégicas?', opts:['Solo el ahorro de dinero en papel y tinta de impresión','Reflejan los objetivos de crecimiento, eficiencia y competitividad que la institución busca alcanzar con tecnología','Reflejan la intención de reemplazar a los empleados con Inteligencia Artificial','Reflejan el cumplimiento de las horas de entrada y salida del personal'], ans:1, exp:'Reflejan los objetivos de crecimiento, eficiencia y competitividad que la institución busca alcanzar a través de la tecnología.'},
+    {topic:'Estrategia', diff:'medium', text:'¿Cuál es el primer paso fundamental para un proyecto de software exitoso?', opts:['Comprar un servidor de base de datos de última generación','Escribir la primera línea de código en un framework moderno','Comprender por qué la organización necesita el sistema, antes de siquiera definir qué funciones debe realizar','Contratar a un diseñador gráfico para el logotipo'], ans:2, exp:'El éxito comienza cuando el analista comprende por qué la organización necesita el sistema, antes de siquiera definir qué funciones debe realizar.'},
+    {topic:'Estrategia', diff:'hard', text:'¿Cuál es la "regla de oro" sobre la relación entre problemas y software?', opts:['Todo problema requiere una aplicación móvil','No todo problema organizacional requiere software, pero cada software debe responder a una necesidad estratégica real','El software resuelve automáticamente todos los problemas gerenciales de la empresa','Si hay un problema de personal, se soluciona comprando software más caro'], ans:1, exp:'No todo problema organizacional requiere software, pero cada software desarrollado debe responder obligatoriamente a una necesidad estratégica real.'},
+    {topic:'Negocio', diff:'easy', text:'¿Qué define la estrategia organizacional en una institución?', opts:['El color del uniforme de los empleados','La marca de computadoras que usan en las oficinas','Define el rumbo de la entidad: qué metas quiere lograr, cómo planea competir y de qué manera espera crecer','El lenguaje de programación preferido por el departamento de IT'], ans:2, exp:'Define el rumbo de la entidad: qué metas quiere lograr, cómo planea competir en su mercado y de qué manera espera crecer.'},
+    {topic:'Negocio', diff:'medium', text:'¿Cómo se debe concebir el software en relación con la estrategia organizacional?', opts:['Como un gasto obligatorio para pagar impuestos','Como un fin en sí mismo, siendo el objetivo principal de la empresa tener el mejor código','Como una moda tecnológica pasajera','No debe verse como un fin, sino como un medio o herramienta para ejecutar y alcanzar la estrategia definida'], ans:3, exp:'El software no debe verse como un fin en sí mismo, sino como un medio o herramienta para ejecutar y alcanzar la estrategia definida.'},
+    {topic:'Negocio', diff:'medium', text:'¿Qué define a un "software exitoso" desde la perspectiva del negocio?', opts:['El que fue programado en el menor tiempo posible','No es el que tiene más funciones, sino el que ayuda de manera efectiva a cumplir la estrategia del negocio','Aquel que utiliza la última versión de un framework web','El que tiene una interfaz 3D e Inteligencia Artificial integrada'], ans:1, exp:'No es aquel que posee la mayor cantidad de funciones, sino el que ayuda de manera efectiva a cumplir la estrategia del negocio.'},
+    {topic:'Negocio', diff:'medium', text:'¿Qué riesgos conlleva un sistema de software mal alineado con la estrategia?', opts:['Puede automatizar procesos incorrectos, generar información irrelevante y convertirse en un gasto inútil en lugar de inversión','Simplemente que los colores de la interfaz no gusten al gerente','Que el sistema se desinstale automáticamente del servidor','Ninguno, cualquier software siempre es beneficioso para la empresa'], ans:0, exp:'Puede automatizar procesos que son incorrectos, generar información que no es relevante y convertirse en un gasto inútil en lugar de una inversión.'},
+    
+    // Identificación de Necesidades
+    {topic:'Necesidades', diff:'hard', text:'¿Cuándo se identifica formalmente una necesidad estratégica del negocio?', opts:['Cuando se acaba el presupuesto anual del departamento de IT','Cuando la organización detecta brechas o vacíos entre su situación actual y la situación deseada a futuro','Cuando los empleados se quejan del color del sistema viejo','Cuando sale una nueva actualización del sistema operativo del servidor'], ans:1, exp:'Cuando la organización detecta brechas o vacíos entre su situación actual y la situación deseada a futuro.'},
+    {topic:'Necesidades', diff:'easy', text:'Menciona tres ejemplos comunes de necesidades estratégicas.', opts:['Comprar más RAM, actualizar Windows, instalar antivirus','Reducir tiempos de atención al cliente, mejorar la toma de decisiones basada en datos y aumentar competitividad general','Usar modo oscuro, cambiar la fuente de texto, agregar animaciones CSS','Despedir personal, reducir sueldos, eliminar departamentos'], ans:1, exp:'Reducir los tiempos de atención al cliente, mejorar la toma de decisiones basada en datos y aumentar la competitividad general.'},
+    {topic:'Necesidades', diff:'medium', text:'¿Por qué las necesidades estratégicas no son aún "requerimientos"?', opts:['Porque aún no se ha firmado el contrato de pago','Porque en esta etapa son razones de negocio que justifican el proyecto, no especificaciones técnicas de funcionamiento','Porque están escritas en un documento de Word y no en un software especializado','Porque requieren aprobación legal externa para convertirse en requerimientos'], ans:1, exp:'Porque en esta etapa son razones de negocio que justifican la existencia del proyecto, no especificaciones técnicas de funcionamiento.'},
+    {topic:'Objetivos', diff:'medium', text:'¿Cómo se definen los objetivos organizacionales dentro de este marco?', opts:['Son sugerencias opcionales que el equipo de IT puede tomar o dejar','Son los deseos personales del CEO de la empresa','Son metas claras y medibles que están estrictamente alineadas con la estrategia de la institución','Son las fechas límite de entrega impuestas por los programadores'], ans:2, exp:'Son metas claras y medibles que están estrictamente alineadas con la estrategia de la institución.'},
+    {topic:'Alineación', diff:'medium', text:'¿Qué pregunta debe poder responder cada requerimiento de software?', opts:['¿Cuántas tablas en la base de datos se necesitan para hacerlo?','¿A qué objetivo organizacional específico contribuye esta funcionalidad?','¿Qué nivel de cifrado de seguridad se va a aplicar?','¿Es posible programarlo en menos de una semana?'], ans:1, exp:'Todo requerimiento debe responder: "¿A qué objetivo organizacional específico contribuye esta funcionalidad?".'},
+    {topic:'Alineación', diff:'hard', text:'¿Cuándo se considera que un software está correctamente alineado con la estrategia?', opts:['Cuando su código fuente está completamente documentado y comentado','Cuando responde a una necesidad estratégica, cada función tiene justificación organizacional y genera valor medible','Cuando fue construido respetando el presupuesto inicial al centavo','Cuando todos los usuarios lo encuentran visualmente atractivo'], ans:1, exp:'Cuando responde a una necesidad estratégica, cada una de sus funciones tiene una justificación organizacional y el sistema genera un valor que se puede medir.'},
+    
+    // Técnicas de Identificación
+    {topic:'Técnicas', diff:'easy', text:'¿Qué técnicas se utilizan para identificar necesidades estratégicas?', opts:['La programación en parejas, el control de versiones y el despliegue continuo','El hacking ético, las pruebas de estrés y la minería de datos','La entrevista, la encuesta, la guía de observación y el análisis documental','El diseño gráfico, la maquetación web y el testing de usabilidad'], ans:2, exp:'Se utilizan la entrevista, la encuesta, la guía de observación y el análisis documental.'},
+    {topic:'Técnicas', diff:'medium', text:'¿Cuál es el propósito principal de una entrevista estratégica?', opts:['Auditar las habilidades técnicas del personal de la empresa','Conseguir firmas legales para iniciar la facturación del proyecto','Busca obtener una visión estratégica global de los problemas y metas del negocio, evitando centrarse en detalles técnicos','Determinar qué lenguaje de programación prefiere usar el cliente'], ans:2, exp:'Busca obtener una visión estratégica global de los problemas y metas del negocio, evitando centrarse en detalles técnicos iniciales.'},
+    {topic:'Técnicas', diff:'medium', text:'¿A quiénes se suelen dirigir las encuestas en este proceso?', opts:['A los clientes externos para saber si comprarían el software','Al equipo de desarrolladores para saber qué herramientas quieren usar','Se dirigen principalmente a los usuarios operativos para conocer si el sistema actual satisface sus necesidades y detectar errores','Exclusivamente al gerente general y la junta directiva'], ans:2, exp:'Se dirigen principalmente a los usuarios operativos para conocer si el sistema actual satisface sus necesidades y detectar errores frecuentes.'},
+    {topic:'Técnicas', diff:'medium', text:'¿Qué aspectos se evalúan mediante una Guía de Observación?', opts:['Se analiza el flujo real de procesos, el nivel de uso de la tecnología y los errores visibles a simple vista en el área de trabajo','Se observa el código fuente del sistema anterior para encontrar vulnerabilidades de seguridad','Se evalúa el rendimiento del hardware de los servidores y el ancho de banda de la red local','Se observa la puntualidad de los empleados a la hora de llegar a la oficina'], ans:0, exp:'Se analiza el flujo real de los procesos (si son manuales), el nivel de uso de la tecnología y los errores que son visibles a simple vista.'},
+    {topic:'Técnicas', diff:'hard', text:'¿Qué valor aporta el análisis documental a la identificación de necesidades?', opts:['Ayuda a calcular el costo exacto del proyecto en base a las facturas anteriores de la empresa','Permite copiar y pegar las políticas antiguas al nuevo sistema sin modificarlas','Aporta el diseño visual de los antiguos manuales para inspirar la nueva interfaz gráfica','Permite descubrir lo que la organización "cree que hace" mediante el estudio de sus planes estratégicos y manuales'], ans:3, exp:'Permite descubrir lo que la organización "cree que hace" mediante el estudio de sus planes estratégicos, manuales y auditorías.'},
+    {topic:'Matriz', diff:'medium', text:'¿Qué permite relacionar la "Matriz Documentada del Proyecto"?', opts:['Las horas de trabajo de cada programador con su salario correspondiente','Permite crear un vínculo directo entre las necesidades estratégicas, los objetivos, los requerimientos y las soluciones propuestas','Las tablas de la base de datos con sus respectivas claves primarias y foráneas','Los errores de código con el desarrollador que los causó (Matriz de culpa)'], ans:1, exp:'Permite crear un vínculo directo entre las necesidades estratégicas, los objetivos, los requerimientos y las soluciones propuestas.'},
+    {topic:'Matriz', diff:'hard', text:'En la matriz documentada, ¿qué relación hay entre "necesidad" y "objetivo"?', opts:['La necesidad es el lenguaje de programación, el objetivo es compilar sin errores','La necesidad es el cliente que paga, el objetivo es entregar el sistema a tiempo','La necesidad es el problema (ej. reducir errores) y el objetivo es el resultado deseado (ej. eficiencia operativa)','Son conceptos totalmente independientes que no deben mezclarse en la matriz'], ans:2, exp:'La necesidad es el problema (ej. reducir errores) y el objetivo es el resultado deseado (ej. eficiencia operativa).'},
+    {topic:'Matriz', diff:'hard', text:'En la matriz documentada, ¿qué relación hay entre "requerimiento" y "solución"?', opts:['El requerimiento es la acción técnica necesaria (ej. reporte en tiempo real) y la solución es la herramienta elegida (ej. Dashboard)','El requerimiento es el problema de negocio y la solución es despedir al empleado responsable','El requerimiento es el hardware necesario y la solución es la tienda donde se compra','El requerimiento es la prueba de software y la solución es corregir el error'], ans:0, exp:'El requerimiento es la acción técnica necesaria (ej. reporte en tiempo real) y la solución es la herramienta elegida (ej. un Dashboard).'},
+    {topic:'Ejemplo', diff:'easy', text:'¿Cuál es la necesidad estratégica en el ejemplo del "Sistema de Inventarios"?', opts:['Comprar monitores más grandes para ver mejor las tablas','Usar una base de datos de última generación por prestigio tecnológico','Evitar el desabastecimiento de productos en la organización','Contratar más personal de almacén'], ans:2, exp:'La necesidad identificada es evitar el desabastecimiento de productos en la organización.'},
+    {topic:'Ejemplo', diff:'medium', text:'¿Cuál es el objetivo y requerimiento en el ejemplo del "Sistema de Inventarios"?', opts:['Objetivo: despedir personal; Requerimiento: automatizar las compras al proveedor','Objetivo: usar código abierto; Requerimiento: base de datos MySQL','Objetivo: controlar asistencia del almacén; Requerimiento: reloj biométrico en la puerta','Objetivo: lograr control en tiempo real; Requerimiento: actualización automática del sistema'], ans:3, exp:'El objetivo es lograr un control en tiempo real y el requerimiento es que la actualización del sistema sea automática.'},
+    {topic:'Documentación', diff:'medium', text:'¿Qué se logra al usar una matriz documentada en un proyecto de software?', opts:['Se organiza y relaciona toda la información para realizar un análisis estructurado y reducir la ambigüedad en el desarrollo','Se autogenera el código fuente de la aplicación usando inteligencia artificial','Se calcula el costo exacto de los servidores web a contratar','Se evita por completo la necesidad de hacer pruebas (testing) de software'], ans:0, exp:'Se organiza y relaciona toda la información para realizar un análisis estructurado y reducir la ambigüedad en el desarrollo.'},
+    {topic:'Calidad', diff:'hard', text:'¿Cómo influye la identificación de necesidades estratégicas en la calidad del software?', opts:['Aumenta la velocidad del procesamiento de datos en el hardware local','Fortalece la pertinencia del sistema, asegurando que el desarrollo esté realmente alineado con las prioridades de la organización','Reduce el tamaño en megabytes del ejecutable final del programa','Garantiza que el sistema nunca tenga bugs o errores lógicos'], ans:1, exp:'Fortalece la pertinencia del sistema, asegurando que el desarrollo esté realmente alineado con las prioridades de la organización.'},
+    {topic:'Documentación', diff:'medium', text:'¿Qué documento es clave revisar durante el análisis documental estratégico?', opts:['El código fuente del sistema que se va a desechar','Las facturas de compra de computadoras de los últimos 5 años','El Plan Estratégico Institucional, ya que contiene la visión a largo plazo de la organización','El manual de uso del framework de programación que usará el equipo'], ans:2, exp:'El Plan Estratégico Institucional, ya que contiene la visión a largo plazo de la organización.'},
+    {topic:'Negocio', diff:'medium', text:'¿Qué beneficio financiero tiene la correcta identificación de necesidades?', opts:['Permite evadir impuestos mediante amortización de software','Asegura que el presupuesto se utilice en soluciones que aporten valor real, evitando que el software sea un gasto sin retorno','Garantiza que los desarrolladores cobren menos por su trabajo','Permite vender la información del usuario a empresas de publicidad'], ans:1, exp:'Asegura que el presupuesto se utilice en soluciones que aporten valor real, evitando que el software sea un gasto sin retorno.'},
+    {topic:'Técnicas', diff:'medium', text:'¿Qué se busca identificar en una entrevista con el Gerente General?', opts:['Se buscan los problemas principales del negocio y qué información es vital para su toma de decisiones diaria','El lenguaje de programación preferido para el backend del sistema','Las opiniones personales sobre el diseño de los botones del aplicativo','Qué empleados deberían ser reemplazados por el nuevo sistema automático'], ans:0, exp:'Se buscan los problemas principales del negocio y qué información es vital para su toma de decisiones diaria.'},
+    {topic:'Toma de Decisiones', diff:'easy', text:'¿Cómo ayuda el software a la toma de decisiones estratégicas?', opts:['Al tomar decisiones automáticamente sin intervención humana basándose en algoritmos aleatorios','Proveyendo información oportuna y reportes en tiempo real que facilitan decisiones rápidas y precisas al estar alineado con los objetivos','Ocultando los datos financieros negativos a la junta directiva para evitar pánico','Bloqueando el acceso a los empleados operativos para que solo los gerentes trabajen'], ans:1, exp:'Al estar alineado con los objetivos, provee información oportuna y reportes en tiempo real que facilitan decisiones rápidas y precisas.'},
+    
+    // Restricciones
+    {topic:'Restricciones', diff:'easy', text:'¿Qué es una restricción en el diseño de software?', opts:['Una limitación impuesta al sistema que condiciona su diseño, construcción o implementación','Un error de red que impide la conexión a la base de datos','Una función adicional solicitada por el cliente a mitad del desarrollo','Un usuario con privilegios mínimos en el sistema'], ans:0, exp:'Es una limitación impuesta al sistema que condiciona su diseño, construcción o implementación.'},
+    {topic:'Restricciones', diff:'medium', text:'¿Dependen las restricciones de las funcionalidades deseadas?', opts:['Sí, cambian constantemente según lo que el usuario pida ese día','Solo si afectan a la interfaz gráfica','No, son independientes de lo que el sistema debe hacer','Sí, si la funcionalidad es compleja, la restricción desaparece'], ans:2, exp:'No, son independientes de lo que el sistema debe hacer.'},
+    {topic:'Restricciones', diff:'medium', text:'¿Se pueden ignorar las restricciones si deseamos algo técnicamente avanzado?', opts:['Sí, si el equipo de desarrollo considera que su solución es mejor que la norma','Solo si el presupuesto es ilimitado','No, el diseño no puede ignorarlas aunque se busque una solución técnica superior','Sí, siempre y cuando se le avise al cliente una vez terminado el sistema'], ans:2, exp:'No, el diseño no puede ignorarlas aunque se busque una solución superior.'},
+    {topic:'Restricciones', diff:'hard', text:'¿Cuáles son las 5 áreas donde influyen las restricciones?', opts:['Hardware, Software, Redes, Usuarios y Proveedores','Arquitectura, selección de tecnologías, alcance funcional, tiempos/costos, y seguridad/legalidad','Diseño UX, Diseño UI, Frontend, Backend y Bases de datos','Análisis, Diseño, Programación, Pruebas y Mantenimiento'], ans:1, exp:'Arquitectura, selección de tecnologías, alcance funcional, tiempos/costos, y seguridad/legalidad.'},
+    {topic:'Restricciones', diff:'medium', text:'¿Por qué las restricciones no se negocian fácilmente?', opts:['Porque el cliente suele cambiar de opinión muy rápido','Porque provienen de normativas, presupuestos, infraestructura preexistente o políticas organizacionales estrictas','Porque los analistas no saben cómo documentar cambios','Porque el software moderno no permite modificaciones una vez compilado'], ans:1, exp:'Porque provienen de normativas, presupuestos, infraestructura o políticas organizacionales.'},
+    {topic:'Premisas', diff:'medium', text:'¿Qué es una premisa en el contexto de un proyecto de software?', opts:['Una suposición aceptada como verdadera al inicio del proyecto (ej. "el cliente tiene internet")','Una regla legal que impone el gobierno a la empresa de software','Un límite en la cantidad de memoria RAM que el sistema puede usar','Una característica técnica obligatoria de la base de datos'], ans:0, exp:'Es una suposición aceptada como verdadera al inicio del proyecto.'},
+    {topic:'Premisas', diff:'hard', text:'¿Qué ocurre si una premisa de proyecto falla (resulta ser falsa)?', opts:['El sistema se vuelve un 10% más lento pero sigue funcionando','Se ignora y se sigue adelante con la programación','Solo afecta al diseño visual de la interfaz gráfica','El sistema completo puede fallar o volverse inviable (ej. asumir internet estable en zona rural)'], ans:3, exp:'El sistema completo puede fallar.'},
+    {topic:'Premisas', diff:'hard', text:'¿Son las premisas limitaciones directas impuestas al diseño?', opts:['Sí, son idénticas a las restricciones técnicas','No, a diferencia de las restricciones, son bases para construir, no límites impuestos','Sí, limitan directamente qué lenguajes de programación se pueden utilizar','Sí, prohíben el uso de ciertos componentes de hardware'], ans:1, exp:'No, a diferencia de las restricciones, son bases para construir, no límites impuestos.'},
+    {topic:'Restricciones', diff:'easy', text:'¿Cuál es la idea clave de una restricción vs un requerimiento?', opts:['La restricción define "qué hace" y el requerimiento define "cuándo lo hace"','La restricción limita el "cómo se construye" y el requerimiento define "qué hace" el sistema','No hay diferencia, son sinónimos técnicos','El requerimiento es de hardware, la restricción es de software'], ans:1, exp:'La restricción limita el cómo se construye. El requerimiento define qué hace.'},
+    {topic:'Arquitectura', diff:'medium', text:'¿Cómo afectan las restricciones a la arquitectura del sistema?', opts:['Solo afectan al color y diseño del panel de administración','Determinan el tipo de arquitectura (monolítica, capas, microservicios) que se puede adoptar dadas las limitaciones','No afectan la arquitectura, solo el diseño de la base de datos','Obligan a que la arquitectura sea siempre orientada a objetos en Java'], ans:1, exp:'Determinan el tipo de arquitectura (monolítica, capas, microservicios, etc.) que se puede adoptar.'},
+    {topic:'Arquitectura', diff:'medium', text:'¿Se diseña la arquitectura solo por "buenas prácticas"?', opts:['Sí, siempre hay que usar la arquitectura más moderna sin importar el contexto','No, se diseña en función de las restricciones reales del proyecto (presupuesto, hardware, equipo)','Sí, las buenas prácticas están por encima de cualquier restricción legal o económica','Sí, porque de lo contrario el código no compila en entornos de producción'], ans:1, exp:'No, se diseña en función de las restricciones reales del proyecto.'},
+    {topic:'Tecnología', diff:'medium', text:'¿Qué condiciona la selección de tecnologías en un proyecto?', opts:['Exclusivamente la preferencia personal del programador principal','Lenguajes, frameworks, bases de datos y plataformas permitidas por el entorno corporativo y presupuesto','El tamaño en megabytes del instalador final del programa','Solo el sistema operativo de las computadoras de los clientes'], ans:1, exp:'Lenguajes, frameworks, bases de datos y plataformas permitidas.'},
+    {topic:'Tecnología', diff:'medium', text:'¿Cuál es el criterio para elegir una tecnología en un entorno empresarial?', opts:['Debe ser la más popular en foros de programación ese año','Debe ser compatible con el contexto organizacional y sus restricciones, no solo técnicamente adecuada o novedosa','Debe ser de código abierto para no pagar nunca por licencias','Debe ser un framework basado en JavaScript para toda la plataforma'], ans:1, exp:'Debe ser compatible con el contexto organizacional, no solo técnicamente adecuada.'},
+    {topic:'Alcance', diff:'hard', text:'¿Qué sucede con el alcance funcional ante fuertes restricciones de tiempo o presupuesto?', opts:['Se ignora el presupuesto y se factura más al cliente al final','Determinan qué funcionalidades se incluyen para el lanzamiento y cuáles se postergan o eliminan','Se exige a los programadores trabajar el doble de horas sin pago extra','Se cancela el proyecto inmediatamente sin buscar alternativas'], ans:1, exp:'Determinan qué funcionalidades se incluyen y cuáles se postergan o eliminan.'},
+    {topic:'Alcance', diff:'hard', text:'¿Qué principios de ingeniería se aplican ante limitaciones de alcance?', opts:['Programación extrema (XP) y hackatones de fin de semana','Desarrollo de sistemas monolíticos sin control de versiones','Reingeniería inversa y decompilación del software competidor','Desarrollo incremental, Producto Mínimo Viable (MVP) y priorización de requerimientos críticos'], ans:3, exp:'Desarrollo incremental, Producto Mínimo Viable (MVP) y priorización de requerimientos.'},
+    {topic:'Restricciones', diff:'medium', text:'¿Qué consecuencias traen las restricciones de plazos (tiempo) cortos?', opts:['Mayor calidad en el código debido a la presión mental extrema del equipo','Menor profundidad en análisis, reducción de cobertura de pruebas y entregas funcionales parciales','Aumento automático del presupuesto por parte del cliente','Contratación inmediata de más personal altamente calificado en 24 horas'], ans:1, exp:'Menor profundidad en análisis, reducción de pruebas y entregas parciales.'},
+    {topic:'Restricciones', diff:'hard', text:'¿En qué influyen las restricciones legales en materia de seguridad?', opts:['En el diseño de seguridad de red, gestión encriptada de datos y mecanismos de auditoría obligatorios','Solo en la redacción del manual de usuario del sistema','Determinan si los desarrolladores deben firmar contratos de confidencialidad o no','Impiden que el sistema use conexiones a internet de cualquier tipo'], ans:0, exp:'En el diseño de seguridad, gestión de datos y mecanismos de auditoría.'},
+    {topic:'Restricciones', diff:'easy', text:'¿Qué riesgos hay al ignorar restricciones legales (ej. ley de protección de datos)?', opts:['El sistema se vuelve un poco más lento en procesar transacciones','El código fuente pierde elegancia y legibilidad','Puede provocar multas económicas severas, sanciones legales o la invalidez completa del sistema','Ninguno si el sistema está alojado en servidores fuera del país'], ans:2, exp:'Sanciones legales o invalidez del sistema.'},
+    {topic:'Restricciones', diff:'medium', text:'¿Cómo ayudan las restricciones a la toma de decisiones arquitectónicas?', opts:['Permiten a los analistas descansar sin pensar en opciones complejas','Al limitar las opciones, fortalecen el análisis y aseguran que la solución diseñada sea realista y viable en ese entorno','Hacen que el cliente pague más dinero por el análisis inicial','Ocultan los errores de diseño bajo excusas de infraestructura'], ans:1, exp:'Fortalecen el análisis y aseguran que la solución sea realista.'},
+    {topic:'Clasificación', diff:'easy', text:'¿Cuáles son los 4 tipos principales de restricciones en proyectos de software?', opts:['Gráficas, Lógicas, Matemáticas y Físicas','Técnicas, Legales, Económicas y Temporales','De Servidor, De Cliente, De Base de Datos y De Red','Internas, Externas, Privadas y Públicas'], ans:1, exp:'Técnicas, legales, económicas y temporales.'},
+    {topic:'Clasificación', diff:'easy', text:'¿Qué es una restricción técnica?', opts:['Una limitación de presupuesto para contratar ingenieros','Una norma del gobierno sobre el uso de software','Una limitación tecnológica existente impuesta al proyecto, como usar un lenguaje obligatorio por herencia','El tiempo máximo en meses que el equipo tiene para programar'], ans:2, exp:'Una limitación tecnológica existente, como un lenguaje obligatorio.'},
+    {topic:'Clasificación', diff:'medium', text:'Menciona ejemplos de restricciones técnicas.', opts:['El presupuesto es de 10 mil dólares máximo','El sistema debe ser entregado antes del 15 de noviembre','Uso obligatorio de Java/.NET, integración con sistemas heredados o un sistema operativo específico','Los usuarios deben firmar políticas de privacidad físicas'], ans:2, exp:'Uso de Java/.NET, integración con sistemas heredados o un sistema operativo específico.'},
+    {topic:'Clasificación', diff:'medium', text:'Menciona ejemplos de restricciones legales.', opts:['Los servidores deben tener 64GB de RAM mínimo','Protección de datos personales, normas contables tributarias y regulaciones sanitarias en bases de datos','El presupuesto no permite comprar licencias de base de datos Oracle','El sistema debe responder en menos de 2 segundos'], ans:1, exp:'Protección de datos personales, normas contables y regulaciones sanitarias.'},
+    {topic:'Clasificación', diff:'medium', text:'Menciona ejemplos de restricciones económicas.', opts:['Obligación de usar un servidor de base de datos SQL Server 2012','El software debe incluir un módulo de facturación electrónica','Presupuesto estrictamente limitado, prohibición de costos de licencias de terceros y recursos humanos reducidos','Las leyes laborales del país prohíben turnos nocturnos'], ans:2, exp:'Presupuesto limitado, costos de licencias y recursos humanos reducidos.'},
+    {topic:'Clasificación', diff:'medium', text:'Menciona ejemplos de restricciones temporales.', opts:['Fecha fija de entrega por normativas, lanzamiento atado a un calendario académico y plazos contractuales cerrados','Contratar un equipo de desarrolladores en menos de una semana','Reducir el tiempo de respuesta del servidor en milisegundos','El horario de oficina de los usuarios operativos'], ans:0, exp:'Fecha fija de entrega, calendario académico y plazos contractuales.'},
+    {topic:'Clasificación', diff:'hard', text:'¿Es negociable un requerimiento funcional?', opts:['No, los requerimientos son leyes inmutables escritas en piedra','Sí, los requerimientos de negocio a menudo se priorizan o negocian para ajustar alcance; a diferencia de las restricciones fuertes','Nunca, si se quita un requerimiento el sistema colapsa','Sí, pero solo si el programador no sabe cómo hacerlo'], ans:1, exp:'Sí, a diferencia de la restricción que generalmente no lo es.'},
+    {topic:'Casos Prácticos', diff:'medium', text:'¿A qué categoría pertenece "El sistema debe cumplir la ley de protección de datos"?', opts:['Restricción legal','Premisa ambiental','Requerimiento estético','Restricción técnica'], ans:0, exp:'Restricción legal.'},
+    {topic:'Casos Prácticos', diff:'medium', text:'¿A qué categoría pertenece el supuesto "Los usuarios ya están capacitados en el uso de PC"?', opts:['Restricción de hardware','Premisa (suposición inicial del entorno)','Requerimiento funcional crítico','Restricción temporal'], ans:1, exp:'Premisa.'},
+    {topic:'Casos Prácticos', diff:'easy', text:'¿A qué categoría pertenece "El sistema debe emitir una factura en PDF"?', opts:['Restricción legal del código fuente','Premisa de diseño gráfico','Restricción técnica innegociable','Requerimiento funcional (lo que el sistema debe hacer)'], ans:3, exp:'Requerimiento.'}
+  ]
+};
+
+var S = {
+  history: [],
+  streak: 0,
+  selectedSubject: 'db',
+  cfg: { qty: 5, diff: 'all', mode: 'study' },
+  quiz: null,
+};
+
+function gel(id){ return document.getElementById(id); }
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  gel(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var tmp=a[i]; a[i]=a[j]; a[j]=tmp;
+  }
+  return a;
+}
+
+function getBadge(p){
+  if(p>=90) return {label:'Excelente ⭐', cls:'b-exc'};
+  if(p>=75) return {label:'Bueno 👍', cls:'b-good'};
+  if(p>=60) return {label:'Regular 📊', cls:'b-reg'};
+  return {label:'Necesita refuerzo 📖', cls:'b-weak'};
+}
+
+function fmtTime(s){
+  return Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60);
+}
+
+function masteryOf(sid){
+  var a = S.history.filter(function(h){ return h.subject===sid; });
+  if(!a.length) return 0;
+  return Math.round(a.reduce(function(x,h){ return x+h.pct; },0)/a.length);
+}
+
+/* DASHBOARD */
+function buildSubjGrid(){
+  var g = gel('subj-grid');
+  g.innerHTML = '';
+  SUBJECTS.forEach(function(s){
+    var m = masteryOf(s.id);
+    var div = document.createElement('div');
+    div.className = 'subj-card' + (S.selectedSubject===s.id ? ' sel' : '');
+    div.dataset.id = s.id;
+    div.innerHTML =
+      '<div class="subj-icon">'+s.icon+'</div>'+
+      '<div class="subj-name">'+s.name+'</div>'+
+      '<div class="subj-count">'+QB[s.id].length+' preguntas</div>'+
+      '<div class="subj-bar"><div class="subj-bar-fill" style="width:'+m+'%"></div></div>';
+    div.addEventListener('click', function(){
+      document.querySelectorAll('.subj-card').forEach(function(c){ c.classList.remove('sel'); });
+      div.classList.add('sel');
+      S.selectedSubject = s.id;
+    });
+    g.appendChild(div);
+  });
+}
+
+function refreshDash(){
+  var total = S.history.length;
+  gel('st-total').textContent = total;
+  gel('st-streak').textContent = S.streak + '🔥';
+  if(total){
+    var avg = Math.round(S.history.reduce(function(a,h){ return a+h.pct; },0)/total);
+    var best = Math.max.apply(null, S.history.map(function(h){ return h.pct; }));
+    gel('st-avg').textContent = avg+'%';
+    gel('st-best').textContent = best+'%';
+  } else {
+    gel('st-avg').textContent = '-%';
+    gel('st-best').textContent = '-%';
+  }
+
+  var list = gel('hist-list');
+  if(!S.history.length){
+    list.innerHTML = '<div style="color:var(--txt3);font-size:.83rem;text-align:center;padding:18px">Sin intentos aún. ¡Empieza!</div>';
+  } else {
+    var recent = S.history.slice().reverse().slice(0,6);
+    list.innerHTML = recent.map(function(h){
+      var subj = SUBJECTS.find(function(s){ return s.id===h.subject; });
+      var b = getBadge(h.pct);
+      var col = h.pct>=75?'var(--ok)':h.pct>=60?'var(--acc4)':'var(--bad)';
+      return '<div class="hist-item">'+
+        '<div class="hist-pct" style="color:'+col+'">'+h.pct+'%</div>'+
+        '<div class="hist-info">'+
+          '<div class="hist-sub">'+subj.icon+' '+subj.name+'</div>'+
+          '<div class="hist-date">'+h.qty+' preguntas · '+h.date+'</div>'+
+        '</div>'+
+        '<span class="badge '+b.cls+'">'+b.label+'</span>'+
+      '</div>';
+    }).join('');
+  }
+
+  document.querySelectorAll('.subj-card').forEach(function(c){
+    var fill = c.querySelector('.subj-bar-fill');
+    if(fill) fill.style.width = masteryOf(c.dataset.id)+'%';
+  });
+}
+
+/* CONFIG */
+function openConfig(){
+  var subj = SUBJECTS.find(function(s){ return s.id===S.selectedSubject; });
+  gel('cfg-icon').textContent = subj.icon;
+  gel('cfg-name').textContent = subj.name;
+  gel('cfg-qcount').textContent = QB[S.selectedSubject].length + ' preguntas en el banco';
+  showScreen('screen-config');
+}
+
+function setupPills(containerId, key){
+  var container = gel(containerId);
+  container.querySelectorAll('.pill').forEach(function(p){
+    p.addEventListener('click', function(){
+      container.querySelectorAll('.pill').forEach(function(x){ x.classList.remove('on'); });
+      p.classList.add('on');
+      S.cfg[key] = key==='qty' ? parseInt(p.dataset.val) : p.dataset.val;
+    });
+  });
+}
+
+function setupModes(){
+  document.querySelectorAll('.mode-card').forEach(function(m){
+    m.addEventListener('click', function(){
+      document.querySelectorAll('.mode-card').forEach(function(x){ x.classList.remove('on'); });
+      m.classList.add('on');
+      S.cfg.mode = m.dataset.val;
+    });
+  });
+}
+
+/* QUIZ */
+function startQuiz(){
+  var pool = QB[S.selectedSubject].slice();
+  if(S.cfg.diff !== 'all'){
+    var filtered = pool.filter(function(q){ return q.diff===S.cfg.diff; });
+    if(filtered.length) pool = filtered;
+  }
+  pool = shuffle(pool).slice(0, S.cfg.qty);
+
+  if(S.quiz && S.quiz.interval) clearInterval(S.quiz.interval);
+
+  S.quiz = {
+    questions: pool,
+    current: 0,
+    answers: [],
+    times: [],
+    startTime: Date.now(),
+    qStart: Date.now(),
+    interval: null,
+    correct: 0,
+    wrong: 0,
+  };
+
+  var subj = SUBJECTS.find(function(s){ return s.id===S.selectedSubject; });
+  gel('qz-subj').textContent = subj.icon + ' ' + subj.name;
+  gel('qz-mode').textContent = S.cfg.mode==='study' ? 'MODO ESTUDIO' : 'MODO EXAMEN';
+
+  S.quiz.interval = setInterval(function(){
+    var e = Math.floor((Date.now()-S.quiz.startTime)/1000);
+    gel('qz-timer').textContent = fmtTime(e);
+  }, 500);
+
+  renderQ();
+  showScreen('screen-quiz');
+}
+
+function renderQ(){
+  var qz = S.quiz;
+  var q = qz.questions[qz.current];
+  var total = qz.questions.length;
+  var letters = ['A','B','C','D'];
+
+  gel('q-num').textContent = 'PREGUNTA ' + (qz.current<9?'0':'') + (qz.current+1);
+  gel('qz-cnt').textContent = (qz.current+1) + '/' + total;
+  gel('q-topic').textContent = q.topic + '  ·  ' + q.diff.toUpperCase();
+  gel('q-text').textContent = q.text;
+  gel('qz-prog').style.width = (qz.current/total*100) + '%';
+  gel('qz-ok').textContent = qz.correct;
+  gel('qz-bad').textContent = qz.wrong;
+  gel('expl').style.display = 'none';
+  gel('q-fb').innerHTML = '';
+  gel('btn-next').style.display = 'none';
+
+  var optsEl = gel('opts');
+  optsEl.innerHTML = q.opts.map(function(o,i){
+    return '<div class="opt" data-i="'+i+'">' +
+      '<div class="opt-let">'+letters[i]+'</div>' +
+      '<span>'+o+'</span>' +
+      '</div>';
+  }).join('');
+
+  optsEl.querySelectorAll('.opt').forEach(function(el){
+    el.addEventListener('click', function(){
+      answerQ(parseInt(el.dataset.i));
+    });
+  });
+
+  qz.qStart = Date.now();
+}
+
+function answerQ(idx){
+  var qz = S.quiz;
+  var q = qz.questions[qz.current];
+  var allOpts = document.querySelectorAll('.opt');
+  if(allOpts[0].classList.contains('disabled')) return;
+
+  var t = Math.floor((Date.now()-qz.qStart)/1000);
+  qz.times.push(t);
+  var ok = (idx === q.ans);
+  qz.answers.push({ chosen: idx, correct: q.ans, ok: ok });
+  if(ok) qz.correct++; else qz.wrong++;
+
+  gel('qz-ok').textContent = qz.correct;
+  gel('qz-bad').textContent = qz.wrong;
+  gel('q-fb').innerHTML = ok
+    ? '<span class="fb-ok">✓ Correcto!</span>'
+    : '<span class="fb-bad">✗ Incorrecto</span>';
+
+  allOpts.forEach(function(el, i){
+    el.classList.add('disabled');
+    if(i === q.ans) el.classList.add('correct');
+    else if(i === idx && !ok) el.classList.add('wrong');
+  });
+
+  if(S.cfg.mode === 'study' && q.exp){
+    var expl = gel('expl');
+    expl.innerHTML = '<strong>Explicación:</strong> ' + q.exp;
+    expl.style.display = 'block';
+  }
+
+  var btn = gel('btn-next');
+  btn.style.display = 'inline-flex';
+  btn.textContent = qz.current >= qz.questions.length-1 ? 'Ver resultados →' : 'Siguiente →';
+}
+
+function nextQ(){
+  var qz = S.quiz;
+  if(qz.current >= qz.questions.length-1){
+    finishQuiz();
+  } else {
+    qz.current++;
+    renderQ();
+  }
+}
+
+function finishQuiz(){
+  var qz = S.quiz;
+  clearInterval(qz.interval);
+  var total = qz.questions.length;
+  var pct = Math.round(qz.correct/total*100);
+  var avgT = qz.times.length ? Math.round(qz.times.reduce(function(a,b){ return a+b; },0)/qz.times.length) : 0;
+  var b = getBadge(pct);
+  var subj = SUBJECTS.find(function(s){ return s.id===S.selectedSubject; });
+
+  S.history.push({
+    subject: S.selectedSubject, pct: pct, qty: total, avgT: avgT,
+    date: new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})
+  });
+  if(pct>=75) S.streak++; else if(pct<60) S.streak=0;
+
+  // Ring animation
+  var circ = 2*Math.PI*54;
+  var ring = gel('ring');
+  var col = pct>=75?'var(--ok)':pct>=60?'var(--acc4)':'var(--bad)';
+  ring.setAttribute('stroke', col);
+  ring.style.strokeDashoffset = circ;
+  setTimeout(function(){ ring.style.strokeDashoffset = circ*(1-pct/100); }, 120);
+
+  gel('res-pct').textContent = pct+'%';
+  gel('res-badge').innerHTML = '<span class="badge '+b.cls+'" style="font-size:.9rem">'+b.label+'</span>';
+  gel('res-subj-tag').textContent = subj.icon+' '+subj.name;
+
+  var msgs = [
+    [90,'¡Dominas este tema. Sigue así!'],
+    [75,'Buen trabajo, sigue practicando.'],
+    [60,'Vas bien, pero hay áreas a mejorar.'],
+    [0, 'Repasa los temas marcados abajo.']
+  ];
+  var msg = msgs.find(function(m){ return pct>=m[0]; })[1];
+  gel('res-msg').textContent = msg;
+
+  gel('r-ok').textContent = qz.correct;
+  gel('r-bad').textContent = qz.wrong;
+  gel('r-time').textContent = avgT+'s';
+
+  // Topics
+  var topicMap = {};
+  qz.questions.forEach(function(q, i){
+    if(!topicMap[q.topic]) topicMap[q.topic] = {ok:0, n:0};
+    topicMap[q.topic].n++;
+    if(qz.answers[i] && qz.answers[i].ok) topicMap[q.topic].ok++;
+  });
+  gel('topic-rows').innerHTML = Object.keys(topicMap).map(function(t){
+    var d = topicMap[t];
+    var p = Math.round(d.ok/d.n*100);
+    var cls = p>=75?'fg':p>=50?'fm':'fb2';
+    var col2 = p>=75?'var(--ok)':p>=50?'var(--acc4)':'var(--bad)';
+    return '<div class="t-row">'+
+      '<div class="t-name">'+t+'</div>'+
+      '<div class="t-bar"><div class="t-fill '+cls+'" style="width:0%" data-p="'+p+'"></div></div>'+
+      '<div class="t-pct" style="color:'+col2+'">'+p+'%</div>'+
+      (p<60?'<span style="font-size:.75rem;color:var(--bad);margin-left:4px">⚠️</span>':'')+
+    '</div>';
+  }).join('');
+
+  // Review
+  gel('rev-list').innerHTML = qz.questions.map(function(q,i){
+    var a = qz.answers[i];
+    var ok2 = a && a.ok;
+    return '<div class="rev-item">'+
+      '<div class="rev-icon">'+(ok2?'✅':'❌')+'</div>'+
+      '<div style="flex:1">'+
+        '<div class="rev-q">'+q.text+'</div>'+
+        (!ok2 && a ? '<div class="a-bad">Tu respuesta: '+q.opts[a.chosen]+'</div>' : '')+
+        '<div class="a-ok">Correcta: '+q.opts[q.ans]+'</div>'+
+      '</div>'+
+      '<div style="font-family:\'DM Mono\',monospace;font-size:.72rem;color:var(--txt3);margin-left:8px">'+(qz.times[i]||0)+'s</div>'+
+    '</div>';
+  }).join('');
+
+  showScreen('screen-res');
+
+  setTimeout(function(){
+    document.querySelectorAll('.t-fill').forEach(function(el){
+      el.style.width = el.dataset.p+'%';
+    });
+  }, 300);
+}
+
+/* LISTENERS */
+gel('btn-start').addEventListener('click', openConfig);
+gel('cfg-back').addEventListener('click', function(){ showScreen('screen-dash'); refreshDash(); });
+gel('btn-quiz-start').addEventListener('click', startQuiz);
+gel('btn-next').addEventListener('click', nextQ);
+gel('btn-dash').addEventListener('click', function(){ showScreen('screen-dash'); refreshDash(); });
+gel('btn-retry').addEventListener('click', openConfig);
+
+setupPills('qty-pills','qty');
+setupPills('diff-pills','diff');
+setupModes();
+
+/* INIT */
+buildSubjGrid();
+refreshDash();
+
+})();
+</script>
+</body>
+</html>
