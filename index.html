@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>StudyTrack - Análisis de Sistemas</title>
+<title>StudyTrack AI - T-SQL Mastery</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -62,6 +62,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .subj-count{color:var(--txt2);font-size:.72rem;margin-top:2px;}
 .subj-bar{height:3px;background:var(--bor);border-radius:2px;margin-top:10px;overflow:hidden;}
 .subj-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .8s ease;}
+
 .hist-list{display:flex;flex-direction:column;gap:8px;}
 .hist-item{display:flex;align-items:center;gap:14px;padding:11px 14px;background:var(--sur2);border:1px solid var(--bor);border-radius:6px;}
 .hist-pct{font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;min-width:44px;}
@@ -90,9 +91,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .mode-card{padding:14px;border:1px solid var(--bor);border-radius:6px;cursor:pointer;background:var(--sur);transition:all .15s;text-align:center;}
 .mode-card:hover{border-color:var(--acc);}
 .mode-card.on{border-color:var(--acc);background:rgba(108,99,255,.1);}
-.mi{font-size:1.3rem;margin-bottom:4px;}
-.mn{font-weight:700;font-size:.88rem;}
-.md{font-size:.72rem;color:var(--txt2);margin-top:2px;}
 
 /* QUIZ */
 .qz-header{display:flex;align-items:center;gap:20px;padding:14px 36px;border-bottom:1px solid var(--bor);}
@@ -100,16 +98,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .qz-subj{font-size:.8rem;font-weight:700;color:var(--acc);}
 .qz-cnt{font-family:'DM Mono',monospace;font-size:.82rem;color:var(--txt2);}
 .qz-mode{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--txt3);}
-.score-live{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:.82rem;}
-.dot{width:7px;height:7px;border-radius:50%;display:inline-block;}
-.dok{background:var(--ok);}
-.dbad{background:var(--bad);}
 .timer{font-family:'DM Mono',monospace;font-size:1.05rem;padding:7px 14px;background:var(--sur);border:1px solid var(--bor);border-radius:4px;min-width:72px;text-align:center;}
 .prog-wrap{height:3px;background:var(--bor);}
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .4s ease;}
 .qz-body{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:36px 20px;max-width:740px;margin:0 auto;width:100%;}
-.q-num{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--txt3);margin-bottom:12px;align-self:flex-start;}
-.q-topic-tag{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;align-self:flex-start;}
 .q-text{font-size:1.3rem;font-weight:700;line-height:1.45;margin-bottom:28px;width:100%;}
 .opts{display:flex;flex-direction:column;gap:10px;width:100%;}
 .opt{padding:14px 18px;border:1px solid var(--bor);border-radius:6px;cursor:pointer;background:var(--sur);transition:all .14s;display:flex;align-items:center;gap:14px;font-size:.92rem;font-weight:500;}
@@ -117,14 +109,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .opt.correct{border-color:var(--ok);background:rgba(67,233,123,.1);color:var(--ok);}
 .opt.wrong{border-color:var(--bad);background:rgba(255,101,132,.1);color:var(--bad);}
 .opt.disabled{cursor:default;}
-.opt-let{width:26px;height:26px;border-radius:50%;border:1px solid var(--bor);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;font-family:'DM Mono',monospace;transition:all .14s;}
-.opt.correct .opt-let{background:var(--ok);border-color:var(--ok);color:#000;}
-.opt.wrong .opt-let{background:var(--bad);border-color:var(--bad);color:#fff;}
-.expl{margin-top:18px;padding:14px 18px;background:rgba(108,99,255,.06);border:1px solid rgba(108,99,255,.2);border-left:3px solid var(--acc);border-radius:4px;font-size:.88rem;color:var(--txt2);line-height:1.6;animation:fadeUp .3s ease;}
-.expl strong{color:var(--txt);}
-.qz-nav{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:28px;}
-.fb-ok{color:var(--ok);font-weight:700;font-size:.88rem;}
-.fb-bad{color:var(--bad);font-weight:700;font-size:.88rem;}
+.opt-let{width:26px;height:26px;border-radius:50%;border:1px solid var(--bor);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;flex-shrink:0;font-family:'DM Mono',monospace;}
+.expl{margin-top:18px;padding:14px 18px;background:rgba(108,99,255,.06);border:1px solid rgba(108,99,255,.2);border-left:3px solid var(--acc);border-radius:4px;font-size:.88rem;color:var(--txt2);line-height:1.6;}
 
 /* RESULTADOS */
 #screen-res .inner{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:36px 20px;overflow-y:auto;}
@@ -136,26 +122,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .ring-fill{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1);}
 .ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .ring-pct{font-size:1.9rem;font-weight:800;font-family:'DM Mono',monospace;}
-.ring-lbl{font-size:.65rem;color:var(--txt2);}
 .res-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
 .met-card{background:var(--sur);border:1px solid var(--bor);border-radius:6px;padding:14px;text-align:center;}
-.met-v{font-size:1.45rem;font-weight:800;font-family:'DM Mono',monospace;margin-bottom:3px;}
-.met-l{font-size:.72rem;color:var(--txt2);}
 .t-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bor);}
-.t-row:last-child{border-bottom:none;}
-.t-name{flex:1;font-size:.88rem;font-weight:500;}
 .t-bar{width:72px;height:4px;background:var(--bor);border-radius:2px;overflow:hidden;}
 .t-fill{height:100%;border-radius:2px;transition:width 1s ease;}
-.fg{background:var(--ok);}
-.fm{background:var(--acc4);}
-.fb2{background:var(--bad);}
-.t-pct{font-family:'DM Mono',monospace;font-size:.82rem;min-width:38px;text-align:right;}
+.fg{background:var(--ok);} .fm{background:var(--acc4);} .fb2{background:var(--bad);}
 .rev-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--sur2);border:1px solid var(--bor);border-radius:6px;margin-bottom:8px;}
-.rev-icon{font-size:.95rem;flex-shrink:0;margin-top:2px;}
-.rev-q{font-size:.82rem;line-height:1.4;}
-.a-ok{font-size:.75rem;margin-top:3px;color:var(--ok);}
-.a-bad{font-size:.75rem;margin-top:3px;color:var(--bad);}
-.res-actions{display:flex;gap:12px;justify-content:center;margin-top:20px;}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .fadein{animation:fadeUp .4s ease both;}
@@ -166,12 +139,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   .topbar,.qz-header{padding:12px 18px;}
   .dash-body{padding:18px;}
   .qz-body{padding:22px 14px;}
-  .q-text{font-size:1.1rem;}
-}
-@media(max-width:480px){
-  .subj-grid{grid-template-columns:1fr;}
-  .mode-wrap{grid-template-columns:1fr;}
-  .res-metrics{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
@@ -180,13 +147,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <div id="screen-dash" class="screen active">
   <div class="topbar">
-    <div class="logo">Análisis de <span>Sistemas</span></div>
-    <span class="tag">v1.1 Global</span>
+    <div class="logo">Study<span>Track</span> AI</div>
+    <span class="tag">v1.1 Master</span>
   </div>
   <div class="dash-body">
     <div class="dash-head fadein">
-      <h2>¡Bienvenido! ¿Estás listo o qué? </h2>
-      <p>Selecciona una materia y empieza a practicar</p>
+      <h2>¡Bienvenido! ¿Estás listo o qué?</h2>
+      <p>Selecciona una materia y empieza a practicar para tu examen</p>
     </div>
     <div class="stats-row fadein">
       <div class="stat-card s1"><div class="stat-v" id="st-total">0</div><div class="stat-l">Intentos totales</div></div>
@@ -204,9 +171,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
       <div>
         <div class="sec-title">Historial reciente</div>
-        <div class="hist-list" id="hist-list">
-          <div style="color:var(--txt3);font-size:.83rem;text-align:center;padding:18px">Sin intentos aún. ¡Empieza!</div>
-        </div>
+        <div class="hist-list" id="hist-list"></div>
       </div>
     </div>
   </div>
@@ -214,7 +179,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <div id="screen-config" class="screen">
   <div class="topbar">
-    <div class="logo">Análisis de <span>Sistemas</span></div>
+    <div class="logo">Study<span>Track</span> AI</div>
     <button class="btn btn-outline btn-sm" id="cfg-back">← Volver</button>
   </div>
   <div class="inner">
@@ -249,14 +214,14 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
       <div class="opt-group">
         <span class="opt-label">Modo</span>
-        <div class="mode-wrap" id="mode-wrap">
+        <div class="mode-wrap">
           <div class="mode-card on" data-val="study">
-            <div class="mi">📖</div><div class="mn">Modo Estudio</div>
-            <div class="md">Respuesta + explicación al instante</div>
+            <div style="font-size:1.3rem">📖</div><div style="font-weight:700;font-size:.88rem">Modo Estudio</div>
+            <div style="font-size:.72rem;color:var(--txt2)">Respuesta + explicación al instante</div>
           </div>
           <div class="mode-card" data-val="exam">
-            <div class="mi">📝</div><div class="mn">Modo Examen</div>
-            <div class="md">Resultados solo al final</div>
+            <div style="font-size:1.3rem">📝</div><div style="font-weight:700;font-size:.88rem">Modo Examen</div>
+            <div style="font-size:.72rem;color:var(--txt2)">Resultados solo al final</div>
           </div>
         </div>
       </div>
@@ -269,23 +234,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="qz-header">
     <div class="qz-meta">
       <span class="qz-subj" id="qz-subj"></span>
-      <span class="qz-cnt" id="qz-cnt">1/10</span>
+      <span class="qz-cnt" id="qz-cnt"></span>
       <span class="qz-mode" id="qz-mode"></span>
-    </div>
-    <div class="score-live">
-      <span class="dot dok"></span><span id="qz-ok">0</span>
-      <span class="dot dbad" style="margin-left:8px"></span><span id="qz-bad">0</span>
     </div>
     <div class="timer" id="qz-timer">0:00</div>
   </div>
   <div class="prog-wrap"><div class="prog-fill" id="qz-prog" style="width:0%"></div></div>
   <div class="qz-body">
-    <div class="q-num" id="q-num">PREGUNTA 01</div>
-    <div class="q-topic-tag" id="q-topic"></div>
     <div class="q-text" id="q-text"></div>
     <div class="opts" id="opts"></div>
     <div class="expl" id="expl" style="display:none"></div>
-    <div class="qz-nav">
+    <div class="qz-nav" style="width:100%; margin-top: 28px; display: flex; justify-content: space-between; align-items: center;">
       <div id="q-fb"></div>
       <button class="btn btn-primary" id="btn-next" style="display:none">Siguiente →</button>
     </div>
@@ -294,7 +253,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <div id="screen-res" class="screen">
   <div class="topbar">
-    <div class="logo">Análisis de <span>Sistemas</span></div>
+    <div class="logo">Study<span>Track</span> AI</div>
     <span class="tag" id="res-subj-tag"></span>
   </div>
   <div class="inner">
@@ -307,16 +266,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           </svg>
           <div class="ring-center">
             <div class="ring-pct" id="res-pct">0%</div>
-            <div class="ring-lbl">PRECISIÓN</div>
+            <div style="font-size:.65rem;color:var(--txt2)">PRECISIÓN</div>
           </div>
         </div>
         <div style="font-size:1.05rem;font-weight:700;margin-bottom:6px" id="res-badge"></div>
         <div style="color:var(--txt2);font-size:.88rem" id="res-msg"></div>
       </div>
       <div class="res-metrics">
-        <div class="met-card"><div class="met-v" id="r-ok" style="color:var(--ok)">0</div><div class="met-l">Correctas</div></div>
-        <div class="met-card"><div class="met-v" id="r-bad" style="color:var(--bad)">0</div><div class="met-l">Incorrectas</div></div>
-        <div class="met-card"><div class="met-v" id="r-time" style="color:var(--acc)">0s</div><div class="met-l">Tiempo promedio</div></div>
+        <div class="met-card"><div class="met-v" id="r-ok" style="color:var(--ok);font-family:'DM Mono';font-size:1.4rem;font-weight:800">0</div><div style="font-size:.72rem;color:var(--txt2)">Correctas</div></div>
+        <div class="met-card"><div class="met-v" id="r-bad" style="color:var(--bad);font-family:'DM Mono';font-size:1.4rem;font-weight:800">0</div><div style="font-size:.72rem;color:var(--txt2)">Incorrectas</div></div>
+        <div class="met-card"><div class="met-v" id="r-time" style="color:var(--acc);font-family:'DM Mono';font-size:1.4rem;font-weight:800">0s</div><div style="font-size:.72rem;color:var(--txt2)">Tiempo prom.</div></div>
       </div>
       <div class="card" style="margin-bottom:18px;">
         <div class="sec-title" style="font-size:.95rem">Análisis por tema</div>
@@ -326,7 +285,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         <div class="sec-title" style="font-size:.95rem">Revisión de preguntas</div>
         <div id="rev-list"></div>
       </div>
-      <div class="res-actions">
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:20px;">
         <button class="btn btn-outline" id="btn-dash">← Dashboard</button>
         <button class="btn btn-primary" id="btn-retry">Intentar de nuevo →</button>
       </div>
@@ -335,14 +294,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 </div>
+
 <script>
 (function(){
 
 var SUBJECTS = [
   { id:'tsql', name:'Programación T-SQL', icon:'💾' },
-  { id:'func', name:'Funciones de Sistema', icon:'⚙️' },
-  { id:'udf', name:'Funciones UDF', icon:'🧩' },
-  { id:'req', name:'Ingeniería de Requisitos', icon:'📚' }
+  { id:'func', name:'Funciones Sistema', icon:'⚙️' },
+  { id:'udf', name:'Funciones de Usuario (UDF)', icon:'🧩' },
+  { id:'anasys', name:'Análisis de Sistemas', icon:'📊' }
 ];
 
 var QB = {
@@ -351,40 +311,277 @@ var QB = {
     {topic:'Variables', diff:'medium', text:'¿Cuál es la regla de oro respecto al ciclo de vida (ámbito) de una variable local?', opts:['Existe durante toda la sesión del usuario hasta que se cierra la conexión','Comienza al declararse y finaliza estrictamente al terminar el "Batch o Lote" exacto donde fue declarada','Su alcance se extiende a todos los lotes anidados si se usa la palabra reservada GLOBAL','Termina únicamente cuando se ejecuta la instrucción RETURN o THROW'], ans:1, exp:'Las variables son estrictamente locales. Solo existen y pueden ser llamadas dentro del Batch o Lote exacto donde fueron declaradas.'},
     {topic:'Variables', diff:'easy', text:'¿Qué requisito de sintaxis es obligatorio al definir el identificador de una variable?', opts:['Debe declararse en letras mayúsculas','Debe incluir el tipo de dato en el nombre','Siempre debe comenzar con el símbolo @ (arroba)','Debe terminar con punto y coma (;) obligatoriamente'], ans:2, exp:'El identificador de una variable siempre comienza con @ (Ejemplo: @MiVariable).'},
     {topic:'Variables', diff:'hard', text:'Respecto a la asignación de valores en variables, ¿cuál de las siguientes afirmaciones es correcta?', opts:['Solo se puede asignar un valor en el momento de la declaración usando "="','Una vez asignado un valor con SET, este es inmutable','La asignación al momento de crearla es opcional, y sus valores se pueden cambiar durante el período de ejecución usando SET','Solo admiten tipos de datos enteros (INT) o cadenas (VARCHAR)'], ans:2, exp:'Se les puede asignar un valor inicial opcional, y además, los valores asignados se pueden cambiar durante el período de ejecución (usando la instrucción SET).'},
+    {topic:'Variables', diff:'medium', text:'Observa esta sintaxis: "DECLARE @Contador INT = 0; GO; PRINT @Contador;". ¿Qué ocurrirá?', opts:['Imprimirá 0 en la consola','Dará un error porque GO no requiere punto y coma','Dará un error porque la variable @Contador dejó de existir al ejecutarse el lote anterior con GO','Ejecutará un bucle infinito'], ans:2, exp:'Como los lotes (terminados con GO) limitan el alcance, la variable @Contador deja de existir una vez que se ejecuta el GO. El PRINT no la encontrará.'},
+    {topic:'Batches (Lotes)', diff:'easy', text:'¿Qué es exactamente un "Batch o Lote" de instrucciones?', opts:['Un comando exclusivo para respaldar bases de datos','Una colección de una o más instrucciones T-SQL enviadas al servidor para su ejecución como una sola unidad','Una variable que almacena múltiples tipos de datos al mismo tiempo','Un bloque de código dedicado exclusivamente al manejo de errores'], ans:1, exp:'Es una colección de una o más instrucciones T-SQL enviadas al servidor para su ejecución conjunta como una sola unidad.'},
     {topic:'Batches (Lotes)', diff:'medium', text:'¿Qué ventaja operativa principal ofrece agrupar instrucciones en lotes?', opts:['Evita la necesidad de usar estructuras TRY...CATCH','Reduce el consumo de memoria RAM del servidor SQL al 50%','Mejora la eficiencia y la gestión del código al enviar múltiples instrucciones al servidor en una sola operación','Permite ejecutar código C# directamente en el motor de SQL Server'], ans:2, exp:'Los batches permiten agrupar múltiples instrucciones en una sola operación, lo cual reduce la carga y mejora la eficiencia y la gestión del código.'},
+    {topic:'GO vs ;', diff:'hard', text:'¿Cuál es el origen formal de la instrucción "GO"?', opts:['Es parte del estándar oficial internacional de SQL','Es una función nativa del motor de procesamiento de consultas relacionales','Fue introducido por las herramientas de Microsoft (como SSMS) y formalmente no forma parte de otras herramientas','Es una instrucción heredada de ADO.NET'], ans:2, exp:'"GO" fue introducido por las herramientas de Microsoft para separar lotes; formalmente no forma parte de otras herramientas ni del estándar SQL.'},
     {topic:'GO vs ;', diff:'hard', text:'¿Por qué NO se debe incluir "GO" dentro de una cadena de texto SQL ejecutada desde ADO.NET (C#)?', opts:['Porque ADO.NET requiere que GO se escriba en minúsculas','Porque el propio motor de SQL no comprende el término GO, es solo un separador para la interfaz del cliente (SSMS)','Porque ADO.NET usa punto y coma (;) para separar lotes en lugar de declaraciones','Porque genera un bloqueo de seguridad en la conexión a la base de datos'], ans:1, exp:'No puede poner GO en una cadena de SQL en ADO.NET ya que el propio SQL no comprende el término (es exclusivo de las herramientas cliente de Microsoft).'},
+    {topic:'GO vs ;', diff:'medium', text:'A diferencia de GO, ¿cuál es la función principal del punto y coma (;)?', opts:['Indicar el final de un lote (batch) completo para su ejecución','Es un estándar oficial de SQL utilizado para indicar el final de una declaración o instrucción individual','Limitar el alcance (ámbito) de las variables temporales','Forzar el cierre de la conexión al servidor SQL'], ans:1, exp:'El punto y coma (;) termina una declaración individual y es el estándar universal, ayudando a evitar ambigüedades.'},
+    {topic:'GO vs ;', diff:'medium', text:'¿Qué afirmación sobre compatibilidad es correcta al comparar GO y el Punto y Coma (;)?', opts:['GO es universal, el ; es exclusivo de SSMS','Ambos son incompatibles con cadenas ADO.NET','GO es incompatible con comandos ADO.NET; el punto y coma (;) es universal y evita ambigüedades','Ambos son estándares oficiales de ANSI SQL'], ans:2, exp:'GO es incompatible con comandos ADO.NET, mientras que el punto y coma es universal (estándar SQL).'},
+    {topic:'Batches (Lotes)', diff:'hard', text:'Si declaras una variable dentro de un lote (Batch A) e intentas actualizarla con UPDATE en un lote consecutivo (Batch B)...', opts:['La actualización será exitosa si ambos lotes están en el mismo script','La variable tomará automáticamente el valor NULL en el Batch B','Habrá un error, ya que las variables son estrictamente locales al lote exacto donde fueron declaradas','El Batch B reiniciará el valor de la variable a cero'], ans:2, exp:'Las variables son estrictamente locales. Solo existen y pueden ser llamadas dentro del Batch o Lote exacto donde fueron declaradas.'},
+    {topic:'Control de Flujo', diff:'easy', text:'¿A qué se refiere el término "Estructuras de Control de Flujo" en T-SQL?', opts:['A la gestión del ancho de banda de la red del servidor SQL','A las instrucciones que dirigen la ejecución del código según condiciones específicas, decisiones lógicas y bucles','A los permisos asignados a un usuario para controlar el acceso a los datos','A la estructura física de las tablas e índices de la base de datos'], ans:1, exp:'Se refiere a las instrucciones que permiten dirigir la ejecución del código de acuerdo con condiciones específicas, decisiones lógicas y bucles.'},
+    {topic:'Control de Flujo', diff:'medium', text:'¿Cuál es la instrucción adecuada si solo necesitas mostrar mensajes de estado o depuración sobre el progreso de un script?', opts:['SELECT','PRINT','RETURN','THROW'], ans:1, exp:'PRINT se utiliza para mostrar mensajes desde una consulta, siendo útil para depuración o información de progreso.'},
+    {topic:'Control de Flujo', diff:'medium', text:'A diferencia de PRINT, ¿cuál es la función de la instrucción SELECT en el control de ejecución?', opts:['Detener la ejecución del script y mostrar un error','Especificar, consultar, recuperar y asignar datos almacenados en tablas','Mostrar únicamente variables tipo cadena de texto','Generar un hito o punto de retorno en el código'], ans:1, exp:'SELECT es la instrucción más común y fundamental para especificar, consultar, asignar y obtener datos de una o más tablas.'},
+    {topic:'Condicionales', diff:'easy', text:'En la instrucción IF...ELSE, ¿bajo qué condición exacta se ejecuta el bloque principal del IF?', opts:['Cuando la expresión booleana devuelve FALSE','Cuando la expresión booleana devuelve NULL','Cuando la expresión booleana devuelve TRUE','Independientemente de la condición, si no se especifica ELSE'], ans:2, exp:'La instrucción IF se ejecuta si se cumple la condición (cuando la expresión booleana devuelve TRUE).'},
     {topic:'Condicionales', diff:'medium', text:'¿Cómo se comporta la estructura CASE al evaluar múltiples condiciones (WHEN)?', opts:['Evalúa todas las condiciones y devuelve un arreglo con todos los resultados verdaderos','Pasa por las condiciones y devuelve el valor de la primera condición que sea verdadera, dejando de leer las demás','Ignora la primera condición verdadera y busca la más compleja','Ejecuta todas las ramas y devuelve el último resultado evaluado'], ans:1, exp:'Una vez que una condición es verdadera, dejará de leer las demás condiciones y devolverá ese resultado.'},
-    {topic:'Manejo de Errores', diff:'easy', text:'¿Cuál es la función principal de la estructura TRY...CATCH en T-SQL?', opts:['Manejar errores de manera controlada para capturarlos sin detener la ejecución abrupta del script','Ignorar cualquier error de sintaxis en el código','Detener el servidor SQL en caso de una alerta de seguridad','Intentar ejecutar una consulta múltiples veces hasta que funcione'], ans:0, exp:'Se utiliza para manejar errores de manera controlada... permite capturar y manejar errores sin detener la ejecución del script.'}
+    {topic:'Condicionales', diff:'hard', text:'En una estructura CASE, ¿qué devuelve el motor de SQL si ninguna condición WHEN es verdadera y NO se incluyó una cláusula ELSE?', opts:['Un error de compilación por sintaxis incompleta','El valor booleano FALSE','El valor devuelto será NULL','Reinicia la lectura del bloque CASE desde el principio'], ans:2, exp:'Si ninguna condición es verdadera y no hay ninguna cláusula ELSE, CASE devuelve NULL.'},
+    {topic:'Condicionales', diff:'medium', text:'Sintácticamente, ¿qué palabra clave indica el final de una estructura condicional CASE?', opts:['STOP','END CASE','END','GO'], ans:2, exp:'La sintaxis termina con la palabra reservada END (Ejemplo: [ELSE resultado] END).'},
+    {topic:'Bucles', diff:'easy', text:'¿Cuál es la única estructura iterativa nativa (bucle) mencionada para T-SQL?', opts:['FOR EACH','DO...WHILE','LOOP','WHILE'], ans:3, exp:'WHILE es la estructura utilizada para ejecutar un bloque repetidamente mientras una condición sea verdadera.'},
+    {topic:'Bucles', diff:'hard', text:'Si tienes dos bucles WHILE anidados (uno dentro de otro) y se ejecuta la instrucción BREAK en el bucle interno, ¿qué sucede?', opts:['Se detienen ambos bucles inmediatamente y finaliza el lote','Solo sale del bucle interno actual y cede el control a la siguiente instrucción del bucle exterior','Reinicia el bucle exterior desde la primera iteración','Lanza un error porque BREAK no soporta anidamiento'], ans:1, exp:'Si el bucle está anidado, BREAK solo sale del bucle actual y se proporciona el control a la siguiente instrucción del bucle exterior.'},
+    {topic:'Bucles', diff:'medium', text:'¿Qué efecto tiene la instrucción CONTINUE dentro de un bucle WHILE?', opts:['Finaliza el bucle por completo al igual que BREAK','Omite todas las instrucciones que le siguen en esa iteración y reinicia el bucle (pasa a la siguiente iteración)','Detiene la ejecución del script durante unos milisegundos','Ignora la condición del WHILE y fuerza la ejecución una vez más'], ans:1, exp:'CONTINUE reinicia el bucle WHILE. Se omiten todas las instrucciones después de la instrucción CONTINUE y vuelve a evaluar.'},
+    {topic:'Bucles', diff:'hard', text:'¿Con qué estructura de control suele abrirse frecuentemente (aunque no siempre) la instrucción CONTINUE?', opts:['TRY...CATCH','CASE','IF','GOTO'], ans:2, exp:'El documento indica que "CONTINUE es frecuente, pero no siempre, abierto por una instrucción IF".'},
+    {topic:'Alteración de Flujo', diff:'medium', text:'¿Cuál es el efecto inmediato de ejecutar la instrucción RETURN?', opts:['Sale incondicional, inmediata y completamente de una consulta, procedimiento o lote','Devuelve el control al inicio del bucle WHILE más cercano','Almacena el resultado temporal en una variable global','Imprime un mensaje y continúa con la siguiente línea de código'], ans:0, exp:'RETURN sale incondicionalmente de una consulta o procedimiento. Es inmediata y completa; las instrucciones posteriores no se ejecutan.'},
+    {topic:'Alteración de Flujo', diff:'hard', text:'¿Qué sucede con las instrucciones Transact-SQL que están escritas físicamente después de un RETURN?', opts:['Se almacenan en caché para la próxima ejecución','Se ejecutan solo si devuelven un error','Se pasan por alto (no se ejecutan)','Generan un error de compilación'], ans:2, exp:'Las instrucciones que siguen a RETURN no se ejecutan.'},
+    {topic:'Alteración de Flujo', diff:'medium', text:'¿Cómo altera el flujo de ejecución la instrucción GOTO?', opts:['Termina el script y lo envía a otra base de datos','Lo dirige directamente hacia una etiqueta específica (label_name) previamente definida','Obliga al servidor a reiniciar la transacción actual','Ejecuta una subconsulta antes de continuar'], ans:1, exp:'GOTO altera el flujo de ejecución y lo dirige a una etiqueta, pasando por alto las instrucciones intermedias.'},
+    {topic:'Alteración de Flujo', diff:'hard', text:'Respecto a la instrucción GOTO, ¿es posible utilizarla múltiples veces de forma anidada?', opts:['No, el motor SQL restringe GOTO a un uso por lote','Sí, las instrucciones GOTO se pueden anidar en cualquier punto de un bloque','Solo si se utiliza en combinación con TRY...CATCH','Solo dentro de un bucle WHILE'], ans:1, exp:'Las instrucciones GOTO y las etiquetas se pueden utilizar en cualquier punto... y las instrucciones GOTO se pueden anidar.'},
+    {topic:'Manejo de Errores', diff:'easy', text:'¿Cuál es la función principal de la estructura TRY...CATCH en T-SQL?', opts:['Manejar errores de manera controlada para capturarlos sin detener la ejecución abrupta del script','Ignorar cualquier error de sintaxis en el código','Detener el servidor SQL en caso de una alerta de seguridad','Intentar ejecutar una consulta múltiples veces hasta que funcione'], ans:0, exp:'Se utiliza para manejar errores de manera controlada... permite capturar y manejar errores sin detener la ejecución del script.'},
+    {topic:'Manejo de Errores', diff:'medium', text:'En la estructura TRY...CATCH, ¿ d ó n d e se debe colocar el código que potencialmente podría causar un error?', opts:['Dentro del bloque BEGIN CATCH','Justo después del END CATCH','Dentro del bloque BEGIN TRY','En una variable separada'], ans:2, exp:'El bloque de código que puede causar errores debe ir encapsulado dentro de BEGIN TRY ... END TRY.'},
+    {topic:'Manejo de Errores', diff:'medium', text:'¿Qué instrucción se utiliza para generar explícitamente un error o relanzar uno capturado?', opts:['RETURN','THROW','BREAK','CATCH_ERROR'], ans:1, exp:'THROW es una instrucción utilizada para generar explícitamente un error o relanzarlo desde un bloque CATCH.'},
+    {topic:'Manejo de Errores', diff:'hard', text:'La instrucción THROW requiere un parámetro llamado "error_number". ¿Cuáles son sus restricciones numéricas?', opts:['Debe ser tipo varchar','Debe ser un número negativo','Debe ser de tipo INT, mayor o igual que 50,000 y menor o igual que 2,147,483,647','Debe ser exactamente 404 o 500'], ans:2, exp:'El argumento error_number es int y debe ser mayor o igual que 50 000 y menor o igual que 2,147,483,647.'},
+    {topic:'Manejo de Errores', diff:'hard', text:'En la instrucción THROW, ¿qué representa el parámetro "state" y qué tipo de dato requiere?', opts:['El país del servidor (varchar)','Indica si el servidor está en línea o fuera de línea (bit)','Representa la excepción en sí misma (int)','Indica el estado asociado al mensaje y requiere un valor "tinyint" (entre 0 y 255)'], ans:3, exp:'El parámetro "state" es una constante o variable entre 0 y 255 que indica el estado que se va a asociar al mensaje. El argumento es tinyint.'},
+    {topic:'Manejo de Errores', diff:'medium', text:'¿Cuál es el tamaño máximo sugerido para el parámetro "message" en la instrucción THROW?', opts:['varchar(10)','nvarchar(2048)','text (sin límite)','char(50)'], ans:1, exp:'El argumento message es una cadena o variable que describe la excepción, y su tipo es nvarchar(2048).'},
+    {topic:'Batches (Lotes)', diff:'hard', text:'¿Cuál de los siguientes flujos ilustra la "Unidad Única" de un lote?', opts:['Un SELECT que busca en un API externo','Instrucciones enviadas al servidor en operaciones separadas para no saturarlo','Múltiples instrucciones (DECLARE, UPDATE, SELECT) enviadas y agrupadas al servidor SQL para ejecutarse de manera conjunta','El cierre de un bloque CATCH'], ans:2, exp:'La Unidad Única significa que es una colección de instrucciones T-SQL (como SELECT, UPDATE, DECLARE) enviadas al servidor para su ejecución conjunta.'},
+    {topic:'Variables', diff:'easy', text:'¿Qué hace la instrucción "SET @MiVariable = 10;"?', opts:['Declara por primera vez la variable asignándole el número 10','Borra el contenido de la variable y lo sustituye por texto','Modifica o asigna el valor "10" a una variable previamente declarada','Define que el tamaño de la variable no superará los 10 bytes'], ans:2, exp:'La instrucción SET se utiliza para asignar o cambiar los valores a las variables durante el período de ejecución.'},
+    {topic:'Control de Flujo', diff:'medium', text:'¿Qué analogía describe mejor cómo transforma T-SQL una consulta al usar Control de Flujo?', opts:['Transforma bases de datos lentas en motores de memoria RAM pura','Transforma consultas simples en programas de base de datos estructurados y resilientes','Convierte código SQL en código HTML para la web','Cambia el estándar de ANSI SQL a un formato propietario'], ans:1, exp:'Al combinar variables, operadores y manejo de excepciones en un lote estructurado, se transforman consultas simples en programas de base de datos resilientes.'},
+    {topic:'GO vs ;', diff:'hard', text:'Si encuentras un código con un "GO" justo a la mitad, y una variable fue declarada antes de este. ¿Se puede usar después del GO?', opts:['No, porque las variables son estrictamente locales al lote, y GO finaliza ese lote','Sí, porque GO solo detiene el tiempo de ejecución, no la memoria','Sí, si se utiliza la instrucción SET nuevamente','Depende de si el tipo de dato es INT o VARCHAR'], ans:0, exp:'Las variables solo existen dentro del Batch exacto donde fueron declaradas. El GO finaliza el lote, destruyendo la variable.'},
+    {topic:'Condicionales', diff:'medium', text:'¿Qué tipo de expresión es obligatoria tanto para la instrucción IF como para el bucle WHILE?', opts:['Expresión aritmética','Expresión booleana (que retorne TRUE o FALSE)','Expresión de cadena (string)','Expresión temporal (fecha/hora)'], ans:1, exp:'Ambas estructuras operan evaluando una "expresión_booleana" en su sintaxis.'},
+    {topic:'Alteración de Flujo', diff:'hard', text:'¿Qué debes hacer obligatoriamente antes de usar una instrucción GOTO?', opts:['Terminar el lote actual con GO','Definir una etiqueta (label_name:) en algún lugar del bloque al cual el GOTO pueda dirigirse','Limpiar la caché del servidor','Abrir un bloque TRY...CATCH para evitar bucles infinitos'], ans:1, exp:'La instrucción GOTO dirige la ejecución a una etiqueta, por lo tanto, el "label_name:" debe existir en el código.'},
+    {topic:'Manejo de Errores', diff:'medium', text:'¿Qué tipo de excepciones simula la estructura TRY...CATCH en T-SQL?', opts:['Interrupciones de hardware a bajo nivel','Mecanismos similares al manejo de excepciones en otros lenguajes de programación estructurados/orientados a objetos','Exclusivamente errores de división por cero','Bloqueos de disco duro o falta de espacio físico'], ans:1, exp:'Proporciona un mecanismo similar a las excepciones en otros lenguajes de programación, manejando el error sin detener la ejecución.'},
+    {topic:'Bucles', diff:'hard', text:'Si requieres que un bucle WHILE evalúe una condición, la encuentre verdadera, ejecute la mitad del código y luego evite ejecutar la otra mitad, repitiendo el proceso. ¿Qué instrucción usas?', opts:['BREAK','RETURN','CONTINUE','GOTO FINAL'], ans:2, exp:'CONTINUE omite todas las instrucciones que siguen dentro del bloque en esa iteración y reinicia el bucle WHILE.'},
+    {topic:'Batches (Lotes)', diff:'medium', text:'¿Qué enunciado describe mejor la "Eficiencia" de un lote (batch)?', opts:['Se reduce el tamaño del archivo .sql a la mitad','Agrupar múltiples instrucciones en una sola operación reduce la carga del servidor y mejora la gestión','Al ejecutarse línea por línea desde el cliente, se ahorra memoria caché','Permite evitar el uso de variables locales'], ans:1, exp:'Eficiencia: Agrupar múltiples instrucciones en una sola operación reduce la carga y mejora la gestión.'},
+    {topic:'Variables', diff:'easy', text:'¿Qué significa el fragmento "[ = VALOR ]" en la sintaxis "DECLARE @VAR TIPO [ = VALOR ]"?', opts:['Que la variable aceptará un arreglo de valores','Que asignar el valor en la misma línea de la declaración es totalmente opcional','Que es obligatorio asignar el valor mediante un operador condicional','Que la variable está bloqueada para modificaciones'], ans:1, exp:'Los corchetes en documentación de sintaxis indican que es una "Asignación Opcional" al momento de crearla.'},
+    {topic:'Condicionales', diff:'hard', text:'¿Puede un CASE anidarse dentro del resultado de otro CASE?', opts:['No, el motor lanza error de profundidad','Sí, como pasa por condiciones, funciona de manera similar a usar IF.. ELSE anidados','Solo si no se utiliza la cláusula ELSE en ninguno de los dos','Exclusivamente dentro de un bucle WHILE'], ans:1, exp:'La condicional CASE devuelve un valor cuando se cumple la primera condición, y funciona "como la condicional IF.. ELSE anidado".'},
+    {topic:'Control de Flujo', diff:'medium', text:'¿Por qué se consideran "robustas y flexibles" las herramientas de control de flujo?', opts:['Porque evitan por completo los ataques de inyección SQL','Porque permiten resolver problemas y solucionar diversas situaciones lógicas complejas de manera eficiente y efectiva','Porque comprimen los datos de las tablas','Porque obligan al desarrollador a documentar el código fuente'], ans:1, exp:'Son fundamentales para desarrollar lógica, resolver problemas y solucionar diversas situaciones de manera eficiente y efectiva.'},
+    {topic:'Bucles', diff:'medium', text:'¿A dónde transfiere el control la instrucción BREAK en ausencia de bucles anidados?', opts:['A la primera línea del script','Al sistema operativo','A la instrucción inmediatamente posterior al final del bucle (fuera del WHILE)','Vuelve al inicio del bucle forzando la evaluación de la condición'], ans:2, exp:'La instrucción BREAK sale del bucle WHILE actual, cediendo el control a la siguiente instrucción fuera del mismo.'},
+    {topic:'Manejo de Errores', diff:'hard', text:'Si tienes un bloque BEGIN TRY...END TRY pero omites el BEGIN CATCH...END CATCH, ¿qué sucede?', opts:['El código se ejecuta normalmente más rápido','Dará un error de sintaxis, el bloque CATCH es obligatorio si se abre un TRY','Automáticamente asume un CATCH oculto que ignora todos los errores','Lanzará una excepción tipo THROW al finalizar el lote'], ans:1, exp:'La estructura completa es BEGIN TRY... END TRY seguida inmediatamente por BEGIN CATCH... END CATCH. Es un bloque conjunto.'},
+    {topic:'Variables', diff:'medium', text:'¿Cuántas variables se pueden declarar con una sola instrucción DECLARE?', opts:['Solo una a la vez','Máximo 10 por lote','Se pueden declarar múltiples separadas por comas (Ej. DECLARE @v1 INT, @v2 VARCHAR)','El documento prohíbe explícitamente declarar más de dos'], ans:2, exp:'En la sintaxis "DECLARE @NOMBRE_VARIABLE TIPO_DATO [= VALOR] , ..." la coma seguida de puntos suspensivos indica que se pueden encadenar.'},
+    {topic:'Control de Flujo', diff:'medium', text:'Si usas PRINT @MiVariable, ¿qué se mostrará?', opts:['El tipo de dato de la variable','La ubicación en memoria de la variable','El mensaje con el valor temporal almacenado en esa variable local','Un mensaje de error indicando que PRINT solo acepta texto fijo'], ans:2, exp:'PRINT acepta "mensaje | @variable | expresión", mostrando el valor que contenga dicha variable.'},
+    {topic:'Alteración de Flujo', diff:'hard', text:'Si utilizas RETURN en un procedimiento almacenado y le pasas una expresión entera (Ej. RETURN 1), ¿qué significa según la sintaxis?', opts:['Que devolverá la tabla número 1 de la base de datos','La expresión_entera opcional se utiliza típicamente para devolver un código de estado de ejecución','Que esperará 1 segundo antes de salir','Es el equivalente a un PRINT "1"'], ans:1, exp:'La sintaxis "RETURN [expresión_entera]" permite salir y opcionalmente devolver un código numérico.'},
+    {topic:'Manejo de Errores', diff:'hard', text:'¿Cuál es la relación principal entre THROW y el bloque CATCH?', opts:['THROW desactiva el bloque CATCH','THROW solo se puede usar fuera de los bloques TRY...CATCH','THROW se usa comúnmente dentro del bloque CATCH para relanzar la excepción capturada al cliente o aplicación que llamó el script','CATCH borra los errores generados por THROW'], ans:2, exp:'Se puede usar para generar errores personalizados o para "relanzar errores capturados en un bloque CATCH".'},
+    {topic:'Batches (Lotes)', diff:'medium', text:'¿Qué determina que una colección de instrucciones se considere un "Batch"?', opts:['Que superen las 100 líneas de código','Que sean enviadas en conjunto por la aplicación cliente (como SSMS) hacia el motor de base de datos en una sola unidad','Que contengan comandos SELECT, UPDATE y DELETE al mismo tiempo','Que incluyan sentencias de seguridad (GRANT/REVOKE)'], ans:1, exp:'Es una colección de instrucciones enviadas al servidor para su ejecución como una sola unidad.'},
+    {topic:'Condicionales', diff:'easy', text:'¿En qué se diferencian el IF y el WHILE principalmente?', opts:['IF es un bucle infinito, WHILE es estático','IF repite la acción, WHILE solo la ejecuta una vez','IF evalúa una condición para decidir si ejecuta un código una vez; WHILE lo repite mientras sea verdadera','No hay diferencia técnica, son sinónimos'], ans:2, exp:'IF es condicional de una sola vía/decisión, WHILE es iterativo (repetitivo).'},
+    {topic:'Control de Flujo', diff:'medium', text:'¿Puede usarse la instrucción SELECT de forma similar a PRINT?', opts:['No, SELECT fallará si no incluye la cláusula FROM','Sí, la sintaxis permite "SELECT mensaje | @variable | expresión" para mostrar resultados como tabla','Solo si el resultado es numérico','Sí, pero requiere permisos de administrador'], ans:1, exp:'La sintaxis muestra que se puede usar "SELECT mensaje | @variable | expresión", no requiriendo obligatoriamente un FROM.'},
+    {topic:'Variables', diff:'hard', text:'¿Es posible utilizar la palabra clave SET para inicializar una variable al mismo tiempo que se declara (en la misma línea de DECLARE)?', opts:['Sí, "DECLARE SET @v = 1" es válido','No, la instrucción DECLARE utiliza el signo = de forma opcional (Asignación Opcional), no la palabra SET','Sí, pero solo para tipos VARCHAR','No, DECLARE prohíbe dar valores iniciales'], ans:1, exp:'Para inicializar al crear es solo `DECLARE @var INT = 10`. La palabra SET se usa como instrucción separada `SET @var = 10`.'}
   ],
   func: [
-    {topic:'Fundamentos', diff:'easy', text:'Según la arquitectura de SQL Server, ¿cuál es la definición formal de una "Función"?', opts:['Una tabla virtual que almacena registros en caché','Un programa predefinido que realiza una tarea específica y devuelve un valor escalar o una tabla','Un comando exclusivo para realizar modificaciones DDL','Un bloque de transacciones de seguridad'], ans:1, exp:'Las funciones son programas predefinidos que realizan una tarea específica y devuelven un valor escalar o una tabla, transformando datos crudos en información útil.'},
-    {topic:'Determinismo', diff:'medium', text:'¿Qué característica técnica define a una función "Determinista"?', opts:['Se ejecuta únicamente con privilegios sysadmin','Devuelve siempre el mismo resultado con los mismos valores de entrada','Cambia su tipo de retorno según el contexto','Ignora la cláusula WHERE'], ans:1, exp:'Las funciones deterministas devuelven siempre el mismo resultado con los mismos valores de entrada.'},
-    {topic:'Agregación', diff:'medium', text:'¿Cuál es la diferencia fundamental entre COUNT(*) y COUNT(Columna)?', opts:['COUNT(*) cuenta caracteres','No hay diferencia técnica','COUNT(*) cuenta todas las filas; COUNT(Columna) solo cuenta valores no nulos en esa columna','COUNT(Columna) devuelve una tabla'], ans:2, exp:'COUNT(*) cuenta todas las filas, mientras que COUNT(Col) realiza el conteo de valores reales en esa columna, excluyendo nulos.'},
+    {topic:'Fundamentos', diff:'easy', text:'Según la arquitectura de SQL Server, ¿cuál es la definición formal de una "Función"?', opts:['Una tabla virtual que almacena registros en caché para consultas más rápidas','Un programa predefinido que realiza una tarea específica y devuelve un valor escalar o una tabla','Un comando exclusivo para realizar modificaciones DDL en la base de datos','Un bloque de transacciones de seguridad asignado a un usuario'], ans:1, exp:'Las funciones son programas predefinidos que realizan una tarea específica y devuelven un valor escalar o una tabla, transformando datos crudos en información útil.'},
+    {topic:'Fundamentos', diff:'medium', text:'¿Cómo se describe la "anatomía" técnica de una rutina de función?', opts:['Recibe índices -> Ejecuta un JOIN -> Devuelve un NULL','Recibe una consulta -> Ejecuta un COMMIT -> Devuelve una Tabla','Acepta parámetros -> Realiza una acción compleja -> Devuelve un resultado','No acepta parámetros, solo se ejecuta implícitamente en el bloque WHERE'], ans:2, exp:'Una función es una rutina que acepta parámetros, realiza una acción compleja y devuelve un resultado.'},
+    {topic:'Fundamentos', diff:'easy', text:'¿Cuáles son las dos categorías principales en las que se clasifican las funciones en SQL Server?', opts:['DML y DDL','De Agregación y de Escalabilidad','Funciones del Sistema (integradas) y Funciones Definidas por el Usuario (UDF)','Deterministas y Temporales'], ans:2, exp:'Se dividen principalmente en Funciones del Sistema y Funciones Definidas por el Usuario.'},
+    {topic:'Fundamentos', diff:'medium', text:'¿Cuál es el propósito principal de crear Funciones Definidas por el Usuario (UDF)?', opts:['Para reemplazar el motor de base de datos relacional','Para encapsular lógica de negocio compleja que no cubren las funciones integradas','Para crear copias de seguridad de las tablas del sistema de forma recursiva','Para ejecutar tareas asíncronas fuera del servidor de base de datos'], ans:1, exp:'Las Funciones de Usuario (UDF) se crean para encapsular lógica de negocio compleja.'},
+    {topic:'Fundamentos', diff:'easy', text:'¿Qué significa que una función tenga un tipo de retorno "Escalar"?', opts:['Que devuelve un conjunto completo de filas y columnas','Que ajusta su resultado automáticamente al tamaño de la pantalla','Que devuelve exactamente 1 solo valor','Que devuelve datos en formato binario o hexadecimal exclusivamente'], ans:2, exp:'Una función escalar (1 valor) es aquella que devuelve exactamente un solo valor como resultado.'},
+    {topic:'Fundamentos', diff:'medium', text:'Si ejecutas una función matemática genérica pasando (5, 5) y te devuelve 25, ¿qué parte de la anatomía representa el "(5, 5)"?', opts:['La Rutina','La Acción','El Valor Escalar','Los Parámetros'], ans:3, exp:'(5, 5) representan los parámetros de entrada que la rutina aceptará para realizar la acción compleja.'},
+    {topic:'Fundamentos', diff:'hard', text:'¿En qué partes de una consulta SQL se pueden invocar las funciones integradas sobre los datos almacenados?', opts:['Únicamente dentro de la cláusula SELECT','Solo en la cláusula FROM y JOIN','En cualquier parte de una consulta (SELECT, WHERE, etc.)','Exclusivamente dentro de un bloque TRY...CATCH'], ans:2, exp:'Estas funciones realizan operaciones sobre los datos almacenados y pueden invocarse en cualquier parte de una consulta (SELECT, WHERE, etc.).'},
+    {topic:'Determinismo', diff:'medium', text:'¿Qué característica técnica define a una función "Determinista"?', opts:['Se ejecuta únicamente cuando el usuario tiene privilegios sysadmin','Devuelve siempre el mismo resultado con los mismos valores de entrada','Cambia su tipo de dato de retorno dependiendo del contexto relacional','Ignora la cláusula WHERE en las instrucciones agrupadas'], ans:1, exp:'Las funciones deterministas devuelven siempre el mismo resultado con los mismos valores de entrada.'},
+    {topic:'Determinismo', diff:'hard', text:'Si ejecutas la función SQRT(100), ¿cómo se clasifica según su determinismo y por qué?', opts:['No determinista, porque el resultado depende del servidor local','Determinista, porque siempre devolverá 10 ante la misma entrada (100)','No determinista, porque es una función matemática de coma flotante','Determinista de Tabla, porque devuelve múltiples decimales'], ans:1, exp:'SQRT(100) es determinista, porque siempre devolverá 10.'},
+    {topic:'Determinismo', diff:'medium', text:'¿Cuál de las siguientes funciones es un ejemplo clásico de función "No Determinista"?', opts:['LEN()','ABS()','GETDATE()','POWER()'], ans:2, exp:'GETDATE() es no determinista porque devuelve resultados diferentes (la fecha/hora actual) cada vez que se llama, incluso con la misma entrada.'},
+    {topic:'Determinismo', diff:'hard', text:'¿Qué genera la función NEWID() y cuál es su clasificación de determinismo?', opts:['Genera un valor booleano de sistema y es determinista','Genera un identificador numérico secuencial global y es determinista','Genera un identificador único global (GUID) cada vez que se ejecuta, por lo tanto es No Determinista','Genera una nueva tabla temporal indexada y es semi-determinista'], ans:2, exp:'NEWID() genera un GUID único en cada ejecución, por lo que devuelve resultados diferentes cada vez que se llama (No Determinista).'},
+    {topic:'Determinismo', diff:'medium', text:'La función LEN(\'Base de Datos\') devuelve 13. ¿A qué categoría de determinismo pertenece?', opts:['Determinista','No Determinista','Estocástica','Escalar Aleatoria'], ans:0, exp:'LEN() es determinista, porque si ingresas \'Base de Datos\', siempre devolverá 13 sin importar el entorno.'},
+    {topic:'Determinismo', diff:'hard', text:'¿Cuál es la regla principal de las funciones "No Deterministas"?', opts:['Deben ser compiladas antes de usarse','Devuelven resultados diferentes cada vez que se llaman, incluso con la misma entrada','Solo pueden ejecutarse una vez por transacción','Generan un producto cartesiano si se usan en un JOIN'], ans:1, exp:'Devuelven resultados diferentes cada vez que se llaman, incluso con la misma entrada.'},
+    {topic:'Agregación', diff:'easy', text:'¿Qué hacen conceptualmente las funciones de agregación?', opts:['Separan una columna en múltiples filas independientes','Calculan un solo valor a partir de un conjunto o grupo de valores','Agregan nuevos registros DML a la base de datos','Suman cadenas de texto (concatenación)'], ans:1, exp:'Calculan un solo valor a partir de un conjunto de datos.'},
+    {topic:'Agregación', diff:'medium', text:'Técnicamente, ¿cuál es la diferencia fundamental entre COUNT(*) y COUNT(Columna)?', opts:['COUNT(*) cuenta caracteres; COUNT(Columna) cuenta palabras enteras','No hay diferencia, el motor las procesa exactamente igual','COUNT(*) realiza un conteo total de filas; COUNT(Columna) solo cuenta los valores reales de esa columna (ignorando los nulos)','COUNT(Columna) es una función escalar, COUNT(*) devuelve una tabla'], ans:2, exp:'COUNT(*) cuenta todas las filas, mientras que COUNT(Col) realiza el conteo de valores reales en esa columna, excluyendo nulos.'},
+    {topic:'Agregación', diff:'easy', text:'Si tienes los salarios (1200, 1500, 2000, 1500), ¿qué resultado arrojará la función MIN()?', opts:['6200','1550','2000','1200'], ans:3, exp:'MIN() encuentra los valores extremos, en este caso el valor mínimo (1200).'},
+    {topic:'Agregación', diff:'easy', text:'¿Qué función de agregación debes usar para obtener la "Suma total" de una columna llamada Salary?', opts:['TOTAL(Salary)','SUM(Salary)','ADD(Salary)','CALC(Salary)'], ans:1, exp:'SUM() es la función de agregación utilizada para obtener la suma total de un conjunto numérico.'},
+    {topic:'Agregación', diff:'easy', text:'¿Qué función de agregación se utiliza para obtener el "Promedio" de la columna Score?', opts:['MEDIAN(Score)','MEAN(Score)','AVG(Score)','SUM(Score)/COUNT(*)'], ans:2, exp:'AVG() es la función de agregación que calcula el promedio de un conjunto.'},
     {topic:'Matemáticas', diff:'medium', text:'¿Cuál es el resultado de la función CEILING(10.2) y FLOOR(10.9) respectivamente?', opts:['10 y 11','11 y 10','10.5 y 10.0','11 y 11'], ans:1, exp:'CEILING realiza el redondeo hacia arriba (10.2 -> 11) y FLOOR el redondeo hacia abajo (10.9 -> 10).'},
-    {topic:'Fechas', diff:'hard', text:'¿Qué hace la instrucción DATETRUNC(HOUR, \'2023-10-25 14:35:55\')?', opts:['Extrae solo el texto "14"','Devuelve 14:00:00 ocultando la fecha','Elimina la precisión de minutos/segundos, devolviendo \'2023-10-25 14:00:00\'','Lanza un error de formato'], ans:2, exp:'DATETRUNC trunca hasta la parte solicitada, poniendo en ceros el resto (minutos y segundos).'}
+    {topic:'Matemáticas', diff:'hard', text:'En SQL, ¿cómo elevas el número 5 al cuadrado (potencia de 2) usando una función?', opts:['POWER(5, 2)','SQRT(5, 2)','SQUARE(5*2)','LOG10(5, 2)'], ans:0, exp:'La función POWER(base, exponente) calcula la potencia. SELECT POWER(5, 2) devuelve 25.'},
+    {topic:'Matemáticas', diff:'easy', text:'¿Qué hace la instrucción SELECT ABS(-10);?', opts:['Devuelve un error por usar números negativos no declarados','Devuelve la raíz cuadrada de 10','Devuelve el valor absoluto del número, es decir, 10','Resta 10 a la fila indexada actual'], ans:2, exp:'ABS() devuelve el valor absoluto de una expresión. SELECT ABS(-10) da como resultado 10.'},
+    {topic:'Matemáticas', diff:'easy', text:'Si ejecutas SELECT SQRT(100);, ¿qué resultado numérico obtendrás?', opts:['10000','50','10','0'], ans:2, exp:'SQRT() calcula la raíz cuadrada del número ingresado. SQRT(100) es 10.'},
+    {topic:'Matemáticas', diff:'medium', text:'¿Para qué sirve específicamente la función CEILING()?', opts:['Redondea un número al entero inferior más cercano','Calcula la potencia exponencial de un número real','Redondea un número al entero superior más cercano (hacia arriba)','Trunca los decimales sin redondear'], ans:2, exp:'CEILING redondea el número ingresado hacia arriba (ej. CEILING(10.2) -> 11).'},
+    {topic:'Matemáticas', diff:'medium', text:'¿Para qué sirve específicamente la función FLOOR()?', opts:['Redondea un número al entero inferior más cercano (hacia abajo)','Extrae únicamente los números decimales de una variable','Calcula el logaritmo base 10','Redondea al entero más cercano dependiendo si el decimal es mayor o menor a .5'], ans:0, exp:'FLOOR redondea el número ingresado hacia abajo (ej. FLOOR(10.9) -> 10).'},
+    {topic:'Matemáticas', diff:'hard', text:'Si ejecutas SELECT LOG10(100);, ¿qué resultado matemático se obtiene?', opts:['10','2','1000','0.1'], ans:1, exp:'LOG10() calcula el logaritmo base 10. El logaritmo base 10 de 100 es 2.'},
+    {topic:'Cadenas', diff:'medium', text:'Si tienes el texto "  Hola  " y quieres eliminar ÚNICAMENTE los espacios de la izquierda, ¿qué función usas?', opts:['RTRIM','LTRIM','TRIM','REPLACE'], ans:1, exp:'LTRIM() limpia los espacios en blanco de la izquierda. LTRIM(\'  Hola\') resulta en \'Hola\'.'},
+    {topic:'Cadenas', diff:'easy', text:'¿Qué resultado arroja exactamente la función de medición LEN(\'SQL Server\')?', opts:['9, porque omite el espacio central','Un error de compilación','10, contando ambas palabras y el espacio en blanco intermedio','La palabra \'Server\''], ans:2, exp:'LEN() cuenta todos los caracteres. \'SQL Server\' tiene exactamente 10 caracteres.'},
+    {topic:'Cadenas', diff:'medium', text:'¿Qué función debes usar si quieres invertir completamente el orden de las letras de la palabra "Roma"?', opts:['INVERT()','FLIP()','REVERSE()','BACKWARD()'], ans:2, exp:'La función REVERSE(\'Roma\') invierte el texto, devolviendo \'amor\'.'},
+    {topic:'Cadenas', diff:'hard', text:'Observa este código: SUBSTRING(\'Microsoft\', 1, 5). ¿Qué extraerá el motor?', opts:['\'Micro\' (Inicia en la posición 1 y extrae una longitud de 5 caracteres)','\'osoft\' (Extrae los 5 últimos caracteres de la cadena)','\'M\' y luego salta al índice 5','Lanzará un error de sintaxis porque el índice SQL debe empezar en 0'], ans:0, exp:'SUBSTRING(texto, inicio, longitud). Inicia en 1 y extrae 5, resultando en \'Micro\'.'},
+    {topic:'Cadenas', diff:'hard', text:'¿Cuál es el resultado matemático y textual de ejecutar REPLACE(\'2023\', \'3\', \'4\')?', opts:['\'2024\' (Reemplaza el carácter \'3\' por el carácter \'4\')','\'20234\' (Concatena el número al final de la cadena)','\'4023\' (Reemplaza el índice 1)','Lanza un error de conversión porque 2023 no es texto'], ans:0, exp:'REPLACE(texto, buscar, sustituir). Busca el \'3\' y lo cambia por \'4\', dando \'2024\'.'},
+    {topic:'Cadenas', diff:'medium', text:'¿Qué función de búsqueda devuelve la posición inicial (índice numérico) de un carácter dentro de un texto, por ejemplo al buscar la "s" en "Test"?', opts:['SEARCH(\'s\', \'Test\')','CHARINDEX(\'s\', \'Test\')','INDEXOF(\'s\', \'Test\')','FIND(\'s\', \'Test\')'], ans:1, exp:'CHARINDEX(\'s\', \'Test\') devuelve el índice numérico del carácter, en este caso 3.'},
+    {topic:'Cadenas', diff:'easy', text:'Si quieres unir \'Hola\', un espacio \' \', y \'Mundo\' en una sola cadena, ¿qué función aplicas?', opts:['JOIN()','CONCAT(\'Hola\', \' \', \'Mundo\')','MERGE()','ADD_TEXT()'], ans:1, exp:'CONCAT une las partes de texto ingresadas, devolviendo \'Hola Mundo\'.'},
+    {topic:'Cadenas', diff:'hard', text:'¿Cuál es el resultado visual de la función de modificación REPLICATE(\'0\', 3)?', opts:['El número entero 0 (Ignora la repetición)','El número decimal 0.3 (División implícita)','La cadena de texto \'000\' (Repite el carácter 3 veces)','Lanza una excepción de desbordamiento de buffer'], ans:2, exp:'REPLICATE toma el carácter y lo repite la cantidad de veces especificada, resultando en \'000\'.'},
+    {topic:'Cadenas', diff:'easy', text:'¿Qué función formatea la cadena "abC" para devolver "ABC"?', opts:['UPPER()','LOWER()','CAPITALIZE()','PROPER()'], ans:0, exp:'UPPER() convierte todo el texto a letras mayúsculas.'},
+    {topic:'Cadenas', diff:'easy', text:'¿Qué función formatea la cadena "ABC" para devolver "abc"?', opts:['LOWER()','DOWNCASE()','SMALL()','MIN()'], ans:0, exp:'LOWER() convierte todo el texto a letras minúsculas.'},
+    {topic:'Cadenas', diff:'medium', text:'Si ejecutas TRIM(\'  Hola  \'), ¿cuál será el estado final de la cadena?', opts:['\'Hola  \' (Limpia la izquierda)','\'  Hola\' (Limpia la derecha)','\'Hola\' (Limpia espacios en blanco a ambos lados)','Elimina el contenido y devuelve NULL'], ans:2, exp:'TRIM() limpia los espacios en blanco ubicados tanto a la izquierda como a la derecha de la cadena.'},
+    {topic:'Cadenas', diff:'medium', text:'¿Qué función usarías para extraer exclusivamente los primeros 4 caracteres desde la izquierda de la palabra "Database"?', opts:['SUBSTRING(\'Database\', 4)','LEFT(\'Database\', 4)','START(\'Database\', 4)','CHARINDEX(4, \'Database\')'], ans:1, exp:'LEFT(\'Database\', 4) extrae caracteres desde el lado izquierdo, devolviendo \'Data\'.'},
+    {topic:'Cadenas', diff:'medium', text:'Si usas RIGHT(\'Database\', 4), ¿qué cadena obtienes como resultado?', opts:['\'Data\'','\'base\'','\'tase\'','\'ase\''], ans:1, exp:'RIGHT(\'Database\', 4) extrae caracteres desde el final (lado derecho), devolviendo \'base\'.'},
+    {topic:'Cadenas', diff:'hard', text:'Si aplicas RTRIM(\'Hola  \'), ¿qué consigues?', opts:['Limpiar los espacios en blanco a la derecha, devolviendo \'Hola\'','Replicar la cadena hacia la derecha','Invertir la cadena hacia la derecha','Eliminar la letra "H"'], ans:0, exp:'RTRIM() (Right Trim) limpia los espacios en blanco situados a la derecha de la cadena.'},
+    {topic:'Cadenas', diff:'hard', text:'¿Qué función de cadena es la mejor opción para encontrar si existe el texto "@gmail" dentro de un correo electrónico y en qué índice comienza?', opts:['REPLACE()','LEFT()','CHARINDEX()','REPLICATE()'], ans:2, exp:'CHARINDEX busca un fragmento de texto dentro de otro y devuelve su posición numérica inicial.'},
+    {topic:'Lógicas', diff:'medium', text:'¿Cómo evalúa el motor la instrucción IIF(50 > 20, \'Mayor\', \'Menor\')?', opts:['Crea un bucle WHILE implícito mientras 50 sea mayor que 20','Evalúa la condición lógica; si es True devuelve \'Mayor\', si es False devuelve \'Menor\'','Suma 50 y 20 y le asigna el alias \'Mayor\' por defecto','Devuelve un error porque IIF no admite operadores relacionales (> <)'], ans:1, exp:'Sintaxis: IIF(condición, true, false). Como 50 > 20 es verdadero, el motor devuelve el primer valor: \'Mayor\'.'},
+    {topic:'Lógicas', diff:'hard', text:'¿Cuál es el comportamiento lógico de la función COALESCE(NULL, NULL, \'Valor\', \'Otro\')?', opts:['Devuelve el último elemento de la lista analizada (\'Otro\')','Genera un error fatal por tener múltiples valores nulos consecutivos','Devuelve la primera expresión de la lista que no sea nula (en este caso \'Valor\')','Concatena y agrupa todos los valores no nulos (\'ValorOtro\')'], ans:2, exp:'COALESCE evalúa secuencialmente y devuelve la primera expresión que no sea nula en la lista.'},
+    {topic:'Lógicas', diff:'hard', text:'¿Qué resultado textual arroja la función CHOOSE(2, \'Rojo\', \'Azul\', \'Verde\')?', opts:['\'Rojo\'','\'Azul\'','\'Verde\'','Lanza una excepción OutOfBounds porque el índice en SQL empieza en 0'], ans:1, exp:'CHOOSE realiza una selección basada por índice (1-based). El elemento en la posición 2 es \'Azul\'.'},
+    {topic:'Lógicas', diff:'easy', text:'¿Qué tipo de resultado devuelve la función IIF de manera general?', opts:['Un valor booleano puro (1 o 0) siempre','El resultado condicional que hayamos definido en sus parámetros True/False','Exclusivamente cadenas de texto','Exclusivamente tablas temporales'], ans:1, exp:'IIF(condición, true, false) devuelve el valor/expresión que nosotros definamos en el parámetro true o false.'},
+    {topic:'Lógicas', diff:'medium', text:'Si ejecutas CHOOSE(1, \'A\', \'B\', \'C\'), ¿qué devuelve?', opts:['\'A\'','\'B\'','NULL','Un error de sintaxis'], ans:0, exp:'CHOOSE selecciona basándose en el índice inicial proporcionado (posición 1 = \'A\').'},
+    {topic:'Fechas', diff:'medium', text:'Diferencia técnica fundamental entre GETDATE() y SYSDATETIME() en SQL Server:', opts:['GETDATE() devuelve la fecha UTC, SYSDATETIME() la fecha local del servidor','GETDATE() ofrece precisión estándar (milisegundos); SYSDATETIME() ofrece alta precisión (nanosegundos)','GETDATE() es determinista, SYSDATETIME() es no determinista','Son exactamente idénticas en precisión, solo cambia el formato visual'], ans:1, exp:'SYSDATETIME() proporciona una precisión mucho mayor (hasta nanosegundos) que el estándar GETDATE().'},
+    {topic:'Fechas', diff:'easy', text:'¿Qué función invocas para obtener la "Hora Greenwich" (Universal UTC) sin que afecte la zona horaria del servidor?', opts:['GETGLOBALTIME()','GETUTCDATE()','UNIVERSALDATE()','UTC()'], ans:1, exp:'GETUTCDATE() devuelve la hora Greenwich, sin zona horaria aplicada (UTC).'},
+    {topic:'Fechas', diff:'hard', text:'Si ejecutas DATEPART(MONTH, \'2023-10-25\'), ¿qué tipo de dato técnico y qué valor devuelve el motor?', opts:['Devuelve el texto VARCHAR \'October\'','Devuelve un número entero (Integer) con valor 10','Devuelve un FLOAT 10.0 para operaciones complejas','Devuelve el timestamp completo del mes'], ans:1, exp:'DATEPART devuelve un número entero (Integer) del \'datepart\' especificado, ideal para cálculos numéricos.'},
+    {topic:'Fechas', diff:'hard', text:'Tienes la fecha \'2024-01-15\'. ¿Qué función devuelve la palabra textual completa "January"?', opts:['MONTHNAME(...)','DATEFORMAT(...)','DATENAME(MONTH, ...)','TEXT(MONTH)'], ans:2, exp:'DATENAME extrae la parte de la fecha solicitada y la devuelve como una cadena de texto (ej. \'January\').'},
+    {topic:'Fechas', diff:'hard', text:'¿Cuál es el propósito analítico de la función DATETRUNC?', opts:['Elimina físicamente los registros más antiguos que la fecha dada','Calcula los días transcurridos entre dos variables temporales','Devuelve la fecha truncada a la precisión especificada (como horas o días), ideal para agrupar (GROUP BY) en reportes','Convierte la fecha en una cadena VARCHAR sin formato'], ans:2, exp:'DATETRUNC devuelve la fecha truncada a la precisión especificada por \'datepart\'. Ideal para agrupar por horas o días.'},
+    {topic:'Fechas', diff:'medium', text:'Si quieres sumar exactamente 10 días a la fecha \'2024-01-01\', ¿qué función de "Matemática Temporal" empleas?', opts:['DATESUM()','DATEADD(DAY, 10, \'2024-01-01\')','ADD_DAYS()','DATEDIFF()'], ans:1, exp:'DATEADD(datepart, número, fecha) suma el tiempo indicado. El resultado será \'2024-01-11\'.'},
+    {topic:'Fechas', diff:'medium', text:'¿Qué función utilizarías para encontrar la diferencia temporal exacta en años entre un inicio (\'2000...\') y un fin (\'2024...\')?', opts:['DATEDIFF(YEAR, inicio, fin)','DATEADD(YEAR, inicio, fin)','SUBTRACT_DATE(inicio, fin)','EOMONTH(inicio, fin)'], ans:0, exp:'DATEDIFF(datepart, start, end) calcula y devuelve la diferencia temporal especificada. Resultaría en 24.'},
+    {topic:'Fechas', diff:'easy', text:'Si pasas como parámetro la fecha \'2024-02-05\' a la función EOMONTH(), ¿qué resultado recibes?', opts:['\'2024-02-01\' (Día 1 del mes)','El nombre en texto del mes bisiesto','\'2024-02-29\' (La fecha del fin de ese mes)','El número exacto de días laborables'], ans:2, exp:'EOMONTH (End Of Month) devuelve el último día correspondiente al mes de la fecha indicada.'},
+    {topic:'Fechas', diff:'easy', text:'Si aplicas YEAR(GETDATE()) en el año actual 2024, ¿qué obtienes?', opts:['La fecha completa truncada','El texto "Dos mil veinticuatro"','El número entero 2024','Un error si no se especifica el formato'], ans:2, exp:'YEAR() extrae únicamente el año de la fecha dada, devolviendo 2024.'},
+    {topic:'Fechas', diff:'easy', text:'Si aplicas MONTH(\'2024-01-15\'), ¿qué obtienes?', opts:['15','2024','1','\'January\''], ans:2, exp:'MONTH() extrae el número del mes, que en este caso es 1.'},
+    {topic:'Fechas', diff:'easy', text:'Si aplicas DAY(\'2024-01-15\'), ¿qué obtienes?', opts:['15','2024','1','Lunes'], ans:0, exp:'DAY() extrae el número del día del mes, que en este caso es 15.'},
+    {topic:'Fechas', diff:'medium', text:'¿Qué función de construcción usarías para crear la fecha \'2024-12-31\' usando números separados?', opts:['BUILD_DATE(2024, 12, 31)','DATEFROMPARTS(2024, 12, 31)','CONCAT_DATE(2024, 12, 31)','MAKE_DATE(2024, 12, 31)'], ans:1, exp:'DATEFROMPARTS toma el año, mes y día por separado y construye una fecha válida: \'2024-12-31\'.'},
+    {topic:'Fechas', diff:'medium', text:'¿Qué función de construcción usarías para crear la hora \'14:30:00\' a partir de enteros separados?', opts:['TIMEFROMPARTS(14, 30, 00, 0, 0)','BUILD_TIME(14, 30)','CREATE_TIME(14, 30, 00)','DATETIMEPARTS(14, 30)'], ans:0, exp:'TIMEFROMPARTS construye un tipo TIME válido a partir de las horas, minutos, segundos, etc..'},
+    {topic:'Fechas', diff:'hard', text:'¿Qué hace la instrucción DATETRUNC(HOUR, \'2023-10-25 14:35:55\')?', opts:['Extrae solo el texto "14"','Devuelve 14:00:00 ocultando la fecha','Elimina la precisión de minutos/segundos, devolviendo \'2023-10-25 14:00:00\'','Lanza un error porque requiere formato DATE'], ans:2, exp:'DATETRUNC trunca hasta la parte solicitada, poniendo en ceros el resto (minutos y segundos).'},
+    {topic:'Conversión', diff:'medium', text:'¿Cuáles son las dos funciones nativas utilizadas para realizar una "Conversión Explícita" de tipos de datos?', opts:['PARSE y EVALUATE','FORMAT y STYLE','CAST y CONVERT','CHANGE y MODIFY'], ans:2, exp:'CAST y CONVERT se usan explícitamente (ej. CAST(25.65 AS INT) o CONVERT(VARCHAR...)).'},
+    {topic:'Conversión', diff:'hard', text:'¿Por qué se denomina "Conversión Segura" a la función TRY_PARSE frente a CAST o CONVERT?', opts:['Encripta los datos usando una clave hash de sistema antes de convertirlos','Si la conversión falla, devuelve explícitamente el valor NULL en lugar de interrumpir el script con un error fatal','Garantiza que el tipo de dato resultante sea inmutable y seguro contra inyecciones SQL','Fuerza el truncamiento de datos en lugar de enviar un aviso'], ans:1, exp:'TRY_PARSE devuelve NULL en lugar de un error si no puede realizar la conversión.'},
+    {topic:'Conversión', diff:'medium', text:'Si ejecutas CAST(25.65 AS INT), ¿qué valor resulta de esta conversión explícita?', opts:['25.65 (Ignora la conversión porque pierde datos)','26 (Redondea al superior por el .65)','25 (Trunca la parte decimal para volverlo entero)','NULL'], ans:2, exp:'CAST(25.65 AS INT) realiza una conversión explícita a entero, truncando la parte decimal y devolviendo 25.'},
+    {topic:'Conversión', diff:'hard', text:'Si ejecutas TRY_PARSE(\'Texto\' AS INT), ¿qué devuelve el motor de SQL?', opts:['Un error de sintaxis','Un error de desbordamiento aritmético','El número 0 por defecto','NULL (Devuelve NULL en lugar de error)'], ans:3, exp:'Al intentar convertir \'Texto\' a número (INT), la conversión falla y TRY_PARSE devuelve NULL de forma segura.'},
+    {topic:'Metadatos', diff:'easy', text:'¿Qué reportan en común las funciones escalares del sistema y metadatos (como @@ROWCOUNT o @@ERROR)?', opts:['La cantidad total de memoria RAM libre del servidor','Informan sobre el estado del sistema o devuelven un valor único sobre la última operación realizada','El número de usuarios conectados actualmente','Los privilegios del usuario que ejecuta el script'], ans:1, exp:'Estas funciones devuelven un valor único que informa sobre el estado del sistema o la última operación realizada.'},
+    {topic:'Metadatos', diff:'medium', text:'En la instrucción "SELECT Producto, ISNULL(Precio, 0) FROM Ventas", ¿qué hace exactamente ISNULL?', opts:['Borra las filas donde el Precio sea Nulo','Devuelve 1 si es Nulo y 0 si tiene valor','Evalúa la columna Precio; si es NULL, la reemplaza en el resultado con el valor especificado (0)','Obliga a la columna Precio a tener una restricción NOT NULL permanente'], ans:2, exp:'ISNULL evalúa la expresión, y si es nula, devuelve el valor de reemplazo (Reemplaza Nulos).'},
+    {topic:'Metadatos', diff:'easy', text:'Si evalúas ISNUMERIC(\'123\'), ¿qué valor devuelve y qué significa?', opts:['123 convertido a tipo BIGINT','Devuelve 1, validando positivamente que la expresión puede tratarse como tipo de dato numérico','Devuelve 0 (Falso) porque detectó comillas simples de texto','La cadena VARCHAR \'Numero\''], ans:1, exp:'ISNUMERIC realiza una validación de tipo y devuelve 1 si la expresión es un número válido.'},
+    {topic:'Metadatos', diff:'hard', text:'Acabas de ejecutar un comando UPDATE masivo. ¿Qué función/variable de metadatos consultas inmediatamente después para conocer cuántas filas se actualizaron?', opts:['@@TRANCOUNT','@@IDENTITY','@@ERROR','@@ROWCOUNT'], ans:3, exp:'@@ROWCOUNT devuelve el número de filas afectadas por la última instrucción ejecutada.'},
+    {topic:'Metadatos', diff:'medium', text:'¿Qué función de metadatos consultarías en un IF para validar si la última consulta generó una falla o error de ejecución?', opts:['IF ISNULL <> 0','IF @@ROWCOUNT == 0','IF @@ERROR <> 0','IF NEWID() IS NULL'], ans:2, exp:'@@ERROR devuelve el número de error de la última sentencia ejecutada. Si hubo fallo, será distinto de cero.'},
+    {topic:'Metadatos', diff:'easy', text:'¿Qué función utilizarías para generar dinámicamente un Identificador Único Global (GUID) en la base de datos?', opts:['GETGUID()','NEWID()','CREATE_UID()','IDENT_CURRENT()'], ans:1, exp:'NEWID() es la función encargada de generar un GUID (Identificador Único Global) nuevo.'},
+    {topic:'Metadatos', diff:'hard', text:'Observa este script: UPDATE Clientes SET Activo = 1; SELECT @@ROWCOUNT;. ¿Qué imprimirá el SELECT?', opts:['Un 1 booleano si fue exitoso','El ID del último cliente modificado','El número total de filas en la tabla Clientes','El número de filas afectadas específicamente por el UPDATE anterior'], ans:3, exp:'@@ROWCOUNT devuelve el número de filas afectadas por la última instrucción (el UPDATE).'},
+    {topic:'Metadatos', diff:'medium', text:'¿Cuál de las siguientes opciones representa a variables globales mencionadas en la documentación?', opts:['@@SESSION y @@USER','@@TRANCOUNT, $PARTITION y @@IDENTITY','@@DATABASE y @@TABLE','@@GLOBAL y @@LOCAL'], ans:1, exp:'El documento lista explícitamente funciones/variables de sistema como $PARTITION, @@TRANCOUNT, y @@IDENTITY.'},
+    {topic:'Windowing', diff:'hard', text:'¿Para qué sirve la cláusula "OVER (ORDER BY ...)" cuando acompaña a las funciones de clasificación?', opts:['Para reemplazar la funcionalidad de la cláusula WHERE global','Para iterar automáticamente la consulta en un bucle WHILE','Define la "ventana" sobre la cual se aplicará la función y el orden en el que se evaluarán las filas para calcular su rango','Comprime los resultados agrupándolos en una única fila consolidada'], ans:2, exp:'OVER(ORDER BY) define el espacio/ventana y orden para generar reportes inteligentes sin perder el detalle de las filas individuales.'},
+    {topic:'Windowing', diff:'hard', text:'Analiza el resultado de la función RANK() sobre los montos de venta: 100, 100, 90, 80. ¿Cómo queda la numeración?', opts:['1, 2, 3, 4 (Número secuencial puro)','1, 1, 2, 3 (Sin saltos)','1, 1, 3, 4 (Genera un salto por el empate en la primera posición)','4, 3, 1, 1 (Asigna al revés por defecto)'], ans:2, exp:'RANK() otorga el mismo rango a valores idénticos, pero genera "Saltos por empate" en los números subsiguientes.'},
+    {topic:'Windowing', diff:'hard', text:'Si debes clasificar los mismos montos (100, 100, 90, 80) pero la regla de negocio exige que NO existan saltos en la numeración tras un empate, ¿qué función eliges?', opts:['ROW_NUMBER()','RANK()','DENSE_RANK()','NTILE(4)'], ans:2, exp:'DENSE_RANK() asigna el mismo rango al empate (1, 1), pero el siguiente valor obtiene el siguiente rango lógico sin saltos (2) -> 1, 1, 2, 3.'},
+    {topic:'Windowing', diff:'medium', text:'¿Qué hace la función ROW_NUMBER() a diferencia de las demás funciones de Ranking?', opts:['Calcula el número de fila basándose en el valor matemático de la celda','Asigna un "Único secuencial" a cada fila evaluada, ignorando por completo si los valores empatan','Calcula y devuelve el número total de filas contenidas en la tabla original','Divide la consulta en ventanas lógicas independientes'], ans:1, exp:'ROW_NUMBER() siempre genera un número único y estrictamente secuencial para cada fila (1, 2, 3, 4), haya empates o no.'},
+    {topic:'Windowing', diff:'medium', text:'¿Qué efecto analítico tiene la función NTILE(4) sobre un conjunto de resultados?', opts:['Filtra y devuelve solo los 4 valores más altos','Ignora las últimas 4 filas de la consulta','Realiza una "División en grupos", particionando las filas en 4 agrupaciones (baldes) proporcionales','Multiplica todos los valores numéricos detectados por 4'], ans:2, exp:'NTILE() realiza una "División en grupos", repartiendo equitativamente las filas en el número de baldes que especifiques en el parámetro.'},
+    {topic:'Windowing', diff:'hard', text:'En la expresión "RANK() OVER (ORDER BY Monto DESC)", ¿qué altera el atributo "DESC"?', opts:['Aplica un filtro que descarta las filas nulas del ranking','Calcula el rango ordenando los montos de mayor a menor, otorgando la posición #1 al monto más alto','Ordena los montos desde el más pequeño (ascendente)','Indica que si ocurre un error, la función es DESC (desconocida)'], ans:1, exp:'DESC ordena los montos de mayor a menor. Por ende, el cálculo se basa en ese orden, premiando con el #1 al Monto más grande.'},
+    {topic:'Windowing', diff:'medium', text:'¿Cuál de las siguientes afirmaciones describe la mayor ventaja del "Windowing" con funciones de clasificación?', opts:['Evita la necesidad de usar tablas en la consulta','Permite crear "reportes inteligentes sin perder el detalle de los datos" (a diferencia de un GROUP BY que condensa las filas)','Encripta los datos de los usuarios finales','Aumenta el espacio en disco del servidor'], ans:1, exp:'Dominar OVER y ORDER BY permite crear reportes inteligentes sin perder el detalle de los datos de las filas.'},
+    {topic:'Capacidades', diff:'easy', text:'¿Cuál es la recomendación final de la guía respecto a las "Funciones Integradas" (del Sistema)?', opts:['Deben ser evitadas siempre en entornos de producción','Úselas para "resolver problemas comunes de fechas, matemáticas y strings" por su versatilidad','Solo pueden utilizarse junto a instrucciones DDL','Solo el administrador de red puede ejecutarlas'], ans:1, exp:'Versatilidad: Use funciones integradas para resolver problemas comunes de fechas, matemáticas y strings.'},
+    {topic:'Capacidades', diff:'easy', text:'¿Qué recomienda hacer la guía cuando necesitas procesar "lógica de negocio compleja" que no existe en el sistema?', opts:['Utilizar funciones de agregación anidadas infinitamente','Exportar los datos a Excel para su procesamiento manual','Crear "Funciones Definidas por el Usuario (UDF)" para encapsular y personalizar dicha lógica','Cambiar el motor de base de datos a uno NoSQL'], ans:2, exp:'Personalización: Cree Funciones de Usuario (UDF) para encapsular lógica de negocio compleja.'}
   ],
   udf: [
-    {topic:'Taxonomía', diff:'easy', text:'¿Cuáles son las dos ramas principales de las UDF?', opts:['DML y DDL','Escalares y de Tipo Tabla','Deterministas y No Deterministas','Sistema y Aisladas'], ans:1, exp:'La taxonomía divide las UDF en Funciones Escalares y Funciones de Tipo Tabla.'},
-    {topic:'Funciones Escalares', diff:'hard', text:'Al invocar una UDF escalar en un SELECT, ¿qué regla es estrictamente obligatoria?', opts:['Corchetes []','EXECUTE antes del nombre','Uso obligatorio del prefijo de esquema (dbo.)','Parámetros obligatorios siempre'], ans:2, exp:'Observe el uso obligatorio del prefijo de esquema "dbo." al invocar funciones escalares definidas por el usuario.'},
-    {topic:'Inline TVF', diff:'medium', text:'¿Cuál es la restricción clave que diferencia a una Inline TVF de las demás?', opts:['No admite parámetros','NO utilizan bloque BEGIN...END','Debe ser dbo. obligatoriamente en su creación','Usa tablas temporales'], ans:1, exp:'La restricción clave absoluta de las Inline TVF es que "NO utilizan bloque BEGIN...END".'},
-    {topic:'Comparativa', diff:'hard', text:'¿Qué justifica elegir una MTVF (Múltiples Declaraciones) en vez de una Inline?', opts:['Consume menos CPU','Solo ella admite parámetros','Solo cuando la lógica requiera pasos intermedios complejos que no caben en un SELECT','Son más modernas'], ans:2, exp:'Múltiples Declaraciones solo se eligen cuando la lógica requiere pasos intermedios complejos.'}
+    {topic:'Modelo Funcional', diff:'easy', text:'Según el documento, ¿cuál es la definición y propósito exacto de una Función Definida por el Usuario (UDF)?', opts:['Es un disparador (trigger) que se ejecuta automáticamente ante un evento','Encapsulan lógica compleja para devolver un resultado predecible, actuando como objetos modulares dentro del servidor','Es una tabla temporal que almacena el historial de consultas de los usuarios','Es un procedimiento que solo puede modificar el esquema de la base de datos (DDL)'], ans:1, exp:'Las funciones encapsulan lógica compleja para devolver un resultado predecible, actuando como objetos modulares dentro del servidor.'},
+    {topic:'Modelo Funcional', diff:'medium', text:'En la anatomía del flujo de una UDF, ¿cuántos parámetros de entrada puede aceptar la rutina?', opts:['Exactamente 1 parámetro obligatorio','De 1 a 10 parámetros máximo','De 0 a N parámetros (pueden no requerir parámetros o requerir múltiples)','Las UDF no aceptan parámetros, solo las funciones del sistema lo hacen'], ans:2, exp:'El modelo funcional indica que las UDF pueden recibir de 0 a N parámetros (@par1 DataType, @par2 DataType, etc.).'},
+    {topic:'Modelo Funcional', diff:'easy', text:'Una vez que los datos pasan por la UDF, existen dos "Paths" (caminos) de salida. ¿Cuáles son?', opts:['Valor Escalar (Único dato) o Conjunto de Resultados (Tabla)','Variable Local o Variable Global','Procedimiento Almacenado o Vista Materializada','Datos Primitivos o Datos Cifrados'], ans:0, exp:'Los dos caminos de salida (Path A y Path B) son un Valor Escalar o un Conjunto de Resultados (Tabla).'},
+    {topic:'Taxonomía', diff:'easy', text:'¿Cuáles son las dos ramas principales en las que se dividen las Funciones Definidas por el Usuario?', opts:['Funciones DML y Funciones DDL','Funciones Escalares y Funciones de Tipo Tabla','Funciones Deterministas y No Deterministas','Funciones de Sistema y Funciones Aisladas'], ans:2, exp:'La taxonomía divide las UDF en Funciones Escalares y Funciones de Tipo Tabla.'},
+    {topic:'Taxonomía', diff:'medium', text:'A su vez, ¿cómo se subdividen estrictamente las "Funciones de Tipo Tabla"?', opts:['Tabla Primaria y Tabla Foránea','Tabla Dinámica y Tabla Estática','Valor de tabla en línea y Valor de tabla de múltiples declaraciones','Tabla Temporal y Tabla Variable'], ans:2, exp:'Las funciones de tipo tabla se dividen en Inline TVF (en línea) y de múltiples declaraciones.'},
+    {topic:'Modelo Funcional', diff:'hard', text:'Si declaras un parámetro de entrada en la firma de una UDF, ¿qué elemento sintáctico debe acompañar siempre al identificador del parámetro?', opts:['La palabra reservada INPUT','El tipo de dato (DataType)','Un valor por defecto obligatorio','La cláusula OUTPUT'], ans:1, exp:'Cada parámetro debe estar acompañado de su tipo de dato (ej. @par1 DataType).'},
+    {topic:'Modelo Funcional', diff:'medium', text:'¿Qué se infiere al decir que una UDF "devuelve un resultado predecible"?', opts:['Que la función advierte si va a fallar antes de ejecutarse','Que siempre devuelve un número entero sin importar la entrada','Que la función ejecuta su lógica estructurada y su tipo de salida está garantizado por su definición','Que la base de datos bloquea resultados inesperados'], ans:2, exp:'Una función encapsula la lógica para asegurar que el resultado devuelto sea siempre el esperado según la lógica programada (un valor escalar o una tabla).'},
+    {topic:'Taxonomía', diff:'hard', text:'En el diagrama de Taxonomía, ¿qué engloba el término principal "Funciones (Functions)"?', opts:['Solo a las UDF','A las Funciones Definidas por el Usuario y las Funciones del Sistema de manera conjunta','Exclusivamente a los procedimientos almacenados y triggers','A las variables globales del motor de base de datos'], ans:1, exp:'"Funciones (Functions)" es el nodo raíz que da origen a las UDF y a las funciones del sistema preintegradas.'},
+    {topic:'Funciones Escalares', diff:'easy', text:'¿Cuál es el propósito principal de una Función Escalar?', opts:['Procesar parámetros y devolver una matriz de datos','Procesar parámetros de entrada y devolver exactamente un (1) solo valor de cualquier tipo de dato válido','Modificar el esquema de una tabla y devolver el estado de la operación','Devolver una fila completa de una tabla consultada'], ans:1, exp:'Su propósito es devolver exactamente un (1) solo valor de cualquier tipo de dato válido (INT, VARCHAR, FLOAT, etc.).'},
+    {topic:'Funciones Escalares', diff:'medium', text:'En la estructura de una función escalar, ¿qué regla aplica sobre el bloque BEGIN...END?', opts:['Es totalmente opcional dependiendo de la complejidad','No está permitido bajo ninguna circunstancia','Es obligatorio para contener las instrucciones del cuerpo de la función','Solo se usa si se declaran variables internamente'], ans:2, exp:'La estructura de una función escalar "Requiere un bloque BEGIN ... END; obligatoriamente".'},
+    {topic:'Funciones Escalares', diff:'hard', text:'¿Qué error de sintaxis hay en la siguiente firma? CREATE FUNCTION dbo.Test() RETURN INT AS...', opts:['Falta definir los parámetros entre paréntesis','La palabra reservada para el tipo de salida debe ser RETURNS, no RETURN','No se puede usar INT, debe ser VARCHAR','No debe llevar el prefijo dbo. en la creación'], ans:1, exp:'La sintaxis correcta para definir el tipo de salida en la firma es RETURNS DataType, mientras que RETURN se usa dentro del cuerpo para devolver el valor.'},
+    {topic:'Funciones Escalares', diff:'medium', text:'¿Qué instrucción debe colocarse justo antes de finalizar el bloque END en una función escalar?', opts:['COMMIT TRANSACTION','RETURN (Valor Único)','SELECT OUTPUT','END FUNCTION'], ans:1, exp:'La función escalar debe concluir su lógica devolviendo el valor calculado mediante la instrucción "RETURN valor;".'},
+    {topic:'Funciones Escalares', diff:'hard', text:'Al invocar una función escalar definida por el usuario en un SELECT, ¿qué regla es estrictamente obligatoria?', opts:['Encerrar el nombre de la función entre corchetes []','Usar la cláusula EXECUTE antes de la función','El uso obligatorio del prefijo de esquema (comúnmente "dbo.") antes del nombre de la función','Pasar al menos un parámetro, incluso si la función no los requiere'], ans:2, exp:'El documento indica como "Nota Clave: Observe el uso obligatorio del prefijo de esquema \'dbo.\' al invocar funciones escalares definidas por el usuario".'},
+    {topic:'Funciones Escalares', diff:'medium', text:'Observa la invocación: "SET @Cant = Cantidad_Empleados(\'M\')". ¿Por qué fallará en SQL Server?', opts:['Porque la variable @Cant no fue declarada','Porque falta la instrucción SELECT dentro del SET','Falla por la ausencia del prefijo de esquema "dbo.", debiendo ser dbo.Cantidad_Empleados(\'M\')','Porque no se pueden asignar resultados de funciones directamente a variables usando SET'], ans:2, exp:'Es obligatorio incluir el prefijo de esquema para invocar UDF escalares. Debe ser dbo.Cantidad_Empleados(\'M\').'},
+    {topic:'Funciones Escalares', diff:'hard', text:'En la anatomía de una UDF escalar, ¿dónde se ubica la instrucción RETURNS [DataType]?', opts:['Dentro del bloque BEGIN...END','Inmediatamente después de cerrar los paréntesis de los parámetros de entrada y antes de la palabra AS','Al final del script, sustituyendo a la instrucción GO','Antes de la instrucción CREATE FUNCTION'], ans:1, exp:'La firma establece el tipo de retorno justo después de los parámetros: CREATE FUNCTION Nombre(...) RETURNS DataType AS...'},
+    {topic:'Funciones Escalares', diff:'medium', text:'Si una función escalar realiza un cálculo matemático complejo (como el Teorema de Pitágoras), ¿cómo suele estructurarse su cuerpo interno?', opts:['Con un simple RETURN y la fórmula matemática directamente en línea','Declarando variables locales, asignándoles el resultado del cálculo con SET y luego usando RETURN sobre la variable','Usando la instrucción INSERT INTO para almacenar los resultados temporales','Creando tablas temporales con el prefijo #'], ans:1, exp:'Suele requerir un bloque estructurado: DECLARE @hipotenusa FLOAT; SET @hipotenusa = [Cálculo]; RETURN @hipotenusa;'},
+    {topic:'Funciones Escalares', diff:'easy', text:'¿Puede una función escalar devolver un tipo de dato DATE?', opts:['No, solo admite tipos numéricos','No, los tipos fecha se devuelven como tablas','Sí, devuelve exactamente un solo valor de cualquier tipo de dato válido, incluyendo DATE','Sí, pero debe convertirse a VARCHAR(10) previamente'], ans:2, exp:'El propósito define que puede devolver "cualquier tipo de dato válido (INT, VARCHAR, FLOAT, DATE, etc.)".'},
+    {topic:'Funciones Escalares', diff:'hard', text:'En el ejemplo de "Cantidad_Empleados_EstadoCivil", la función internamente utiliza un SELECT COUNT(1)... ¿Es esto válido dentro de una función escalar?', opts:['No, las funciones escalares no pueden acceder a tablas de la base de datos','Sí, siempre y cuando ese SELECT se asigne a una variable escalar (ej. SET @var = (SELECT...))','No, las consultas SELECT solo se permiten en funciones de tipo tabla','Sí, pero el SELECT debe devolver múltiples columnas'], ans:1, exp:'Es totalmente válido. La función escalar puede ejecutar consultas, pero el resultado (como un COUNT) debe asignarse a una variable escalar para poder ser retornado.'},
+    {topic:'Funciones Escalares', diff:'medium', text:'¿Qué instrucción DDL se utiliza para modificar una función escalar existente sin tener que eliminarla (DROP) primero?', opts:['UPDATE FUNCTION','MODIFY FUNCTION','ALTER FUNCTION','CHANGE FUNCTION'], ans:2, exp:'La instrucción correcta mostrada en los ejemplos para modificar una UDF es ALTER FUNCTION.'},
+    {topic:'Funciones Escalares', diff:'medium', text:'Al modificar una UDF usando "CREATE OR ALTER FUNCTION", ¿qué ventaja obtienes?', opts:['Ignora los errores de compilación','Cambia el tipo de la función de Escalar a Tabla automáticamente','Crea la función si no existe, o la modifica si ya existe, simplificando el despliegue de scripts','Elimina todas las dependencias de la función en la base de datos'], ans:2, exp:'CREATE OR ALTER es una sintaxis moderna que verifica la existencia y aplica la creación o modificación en una sola instrucción de manera segura.'},
+    {topic:'Inline TVF', diff:'easy', text:'¿Qué caracteriza el "Valor Devuelto" de una función de tabla en línea (Inline TVF)?', opts:['Devuelve un único valor concatenado','Devuelve un objeto JSON','Devuelve múltiples filas y columnas (Un conjunto de resultados o Tabla)','Devuelve un mensaje de estado de error'], ans:2, exp:'Al ser una función de tipo tabla, su propósito es devolver múltiples filas/columnas.'},
+    {topic:'Inline TVF', diff:'medium', text:'¿Cuál es la "Restricción Clave" que diferencia a la sintaxis de una Tabla en Línea de las demás funciones?', opts:['No puede recibir parámetros de entrada','NO utilizan bloque BEGIN...END','Debe incluir el prefijo dbo. obligatoriamente en su creación','Requiere la declaración de tablas temporales internamente'], ans:1, exp:'La restricción clave absoluta de las Inline TVF es que "NO utilizan bloque BEGIN...END".'},
+    {topic:'Inline TVF', diff:'hard', text:'¿Cómo se define la salida (Firma) en la declaración de una Función de Tabla en Línea?', opts:['RETURNS DataType','RETURNS @Variable TABLE(...)','RETURNS TABLE','RETURNS VIEW'], ans:2, exp:'Para las Inline TVF, simplemente se usa la palabra reservada general: RETURNS TABLE.'},
+    {topic:'Inline TVF', diff:'medium', text:'En cuanto a la sintaxis interna de una Inline TVF, ¿cómo se estructura su cuerpo lógico?', opts:['Declarando variables y usando bucles WHILE','Consiste en un único RETURN que envuelve una instrucción SELECT entre paréntesis','Consiste en múltiples SELECTs separados por la instrucción UNION','Usando INSERT INTO seguido de un SELECT'], ans:1, exp:'Consisten en un único RETURN() que envuelve directamente la instrucción SELECT, sin pasos intermedios.'},
+    {topic:'Inline TVF', diff:'hard', text:'¿Por qué se considera que las Funciones de Tabla en Línea destacan por su "Velocidad"?', opts:['Porque almacenan sus resultados permanentemente en el disco duro','Porque eluden las validaciones de seguridad de SQL Server','Porque actúan como "vistas parametrizadas" que el motor de base de datos puede optimizar altamente','Porque se ejecutan del lado del cliente (aplicación) y no en el servidor'], ans:2, exp:'Actúan como vistas parametrizadas, lo que permite al Optimizador de Consultas de SQL integrarlas y optimizarlas en el plan de ejecución de forma nativa.'},
+    {topic:'Inline TVF', diff:'medium', text:'Al invocar una Función de Tipo Tabla en una consulta, ¿dónde se ubica generalmente en la instrucción SELECT?', opts:['En la cláusula ORDER BY','Se coloca dentro de la cláusula FROM (ej. SELECT * FROM Mostrar_Empleados(50))','En la cláusula WHERE como una condición booleana','En la cláusula SELECT como si fuera una columna más'], ans:1, exp:'Al devolver un conjunto de resultados, se tratan como tablas o vistas, invocándose en la cláusula FROM.'},
+    {topic:'Inline TVF', diff:'hard', text:'Observa este código: RETURN SELECT * FROM Empleados;. ¿Es correcta la sintaxis para una Inline TVF?', opts:['Sí, es totalmente válida y funcional','No, la instrucción SELECT obligatoriamente debe estar envuelta entre paréntesis: RETURN (SELECT * FROM Empleados);','No, falta el bloque BEGIN...END','Sí, siempre y cuando no se usen alias de columnas'], ans:1, exp:'La sintaxis estricta exige que la consulta SQL vaya dentro de los paréntesis del RETURN().'},
+    {topic:'Inline TVF', diff:'medium', text:'¿Se puede usar la cláusula ORDER BY dentro del SELECT interno de una función de tabla en línea?', opts:['Sí, sin ninguna restricción','No, el ORDER BY debe aplicarse externamente en la consulta que llama a la función, no en su definición interna','Sí, pero solo si se usa también GROUP BY','Solo si la tabla tiene menos de 1000 registros'], ans:1, exp:'En SQL, el ordenamiento (ORDER BY) se realiza en la consulta final exterior (SELECT * FROM Funcion() ORDER BY...), no dentro de la definición de vistas o funciones inline (a menos que se use TOP).'},
+    {topic:'Inline TVF', diff:'easy', text:'¿Es posible pasarle parámetros a una Función de Tabla en Línea?', opts:['No, al ser como vistas no admiten parámetros','Sí, es justamente su ventaja principal ("vistas parametrizadas") para filtrar dinámicamente el resultado','Solo si los parámetros son de tipo cadena (VARCHAR)','Solo si el usuario administrador lo aprueba'], ans:1, exp:'Sí, reciben parámetros que se integran típicamente en la cláusula WHERE de su consulta interna (ej. WHERE VacationHours <= @hora).'},
+    {topic:'Inline TVF', diff:'hard', text:'¿Se requiere el uso del prefijo de esquema (dbo.) al invocar una Inline TVF en la cláusula FROM?', opts:['Es totalmente opcional, el motor la resuelve automáticamente al estar en el FROM','Es obligatorio, al igual que en las funciones escalares','Las funciones de tabla no pertenecen a esquemas','Solo si la función devuelve más de una columna'], ans:0, exp:'A diferencia de las funciones escalares (donde es obligatorio), en el FROM de las funciones de tabla el prefijo dbo. suele resolverse automáticamente o su uso no genera el mismo error fatal de sintaxis, aunque es buena práctica.'},
+    {topic:'Múltiples Declaraciones', diff:'medium', text:'En una Función de Tabla de Múltiples Declaraciones, ¿cómo se debe definir la salida en la firma (RETURNS)?', opts:['RETURNS TABLE','RETURNS MultiTable','RETURNS @Variable TABLE (col1 DataType, col2 DataType...) especificando el esquema exacto','RETURNS DATASET'], ans:2, exp:'El Paso 1 exige definir una variable tipo tabla (ej. @Lista) y estructurar explícitamente sus columnas y tipos en la firma.'},
+    {topic:'Múltiples Declaraciones', diff:'hard', text:'¿Cuál es la diferencia respecto al uso de BEGIN...END entre una Inline TVF y una de Múltiples Declaraciones?', opts:['Ambas prohíben su uso','En la Inline es obligatorio, en la Múltiple está prohibido','En la Inline NO está permitido, pero en la de Múltiples Declaraciones vuelve a ser de uso OBLIGATORIO','Ambas requieren su uso si superan las 10 líneas de código'], ans:2, exp:'La matriz de decisión es clara: Inline -> No Permitido. Múltiples Declaraciones -> Obligatorio.'},
+    {topic:'Múltiples Declaraciones', diff:'medium', text:'En el cuerpo de una función de Múltiples Declaraciones, ¿qué instrucción se utiliza comúnmente para poblar la variable de tabla que definimos?', opts:['UPDATE TABLE','INSERT INTO @Variable (seguida de los SELECTs necesarios)','MERGE DATA','SET @Variable = SELECT...'], ans:1, exp:'El Paso 3 indica que "Se utiliza INSERT INTO para poblar la variable de tabla" con los resultados de las consultas.'},
+    {topic:'Múltiples Declaraciones', diff:'hard', text:'¿Cómo debe ser la instrucción RETURN al final del cuerpo de una función de tabla de múltiples declaraciones?', opts:['RETURN (SELECT * FROM @Variable);','RETURN @Variable;','El RETURN se declara solo, sin parámetros, ya que el motor devuelve implícitamente la variable de tabla definida','No debe usarse RETURN, el bloque END la finaliza automáticamente'], ans:2, exp:'El Paso 4 dice: "El RETURN se declara solo, sin parámetros, ya que devuelve @Lista por defecto".'},
+    {topic:'Múltiples Declaraciones', diff:'easy', text:'¿Qué tipo de operaciones lógicas se justifican realizar dentro de una función de Múltiples Declaraciones?', opts:['Un simple SELECT puro a una tabla','La creación de nuevas bases de datos y usuarios','Pasos intermedios complejos, asignaciones iterativas y múltiples consultas que componen una tabla final','Exclusivamente cálculos matemáticos de un solo valor'], ans:2, exp:'Se utiliza cuando "la lógica requiera pasos intermedios complejos" para construir el resultado final.'},
+    {topic:'Múltiples Declaraciones', diff:'hard', text:'Analiza el siguiente fragmento: RETURNS @Lista TABLE (ID INT, Nombre VARCHAR). ¿En qué parte estructural se ubica esto?', opts:['En el bloque BEGIN de la función','Como la firma/tipo de retorno inmediatamente después de los parámetros de entrada','Justo antes del RETURN final','Reemplaza a la instrucción CREATE FUNCTION'], ans:1, exp:'Es la definición de salida, que va en la firma de la función (antes de la cláusula AS BEGIN).'},
+    {topic:'Múltiples Declaraciones', diff:'medium', text:'¿Se puede ejecutar una instrucción DELETE o UPDATE sobre tablas de la base de datos dentro del cuerpo de una UDF de múltiples declaraciones?', opts:['Sí, son funciones ideales para mantener registros','No, las UDF en SQL Server están diseñadas para no tener "efectos secundarios", por lo que no pueden modificar datos permanentes','Sí, siempre y cuando se use COMMIT','Solo sobre tablas temporales físicas (#Tabla)'], ans:1, exp:'Las funciones en SQL Server (incluidas las de múltiples declaraciones) encapsulan lógica para consultar y devolver datos, no para modificar el estado de la base de datos (para eso se usan Procedimientos Almacenados). Solo pueden poblar su propia variable de tabla (@Variable).'},
+    {topic:'Múltiples Declaraciones', diff:'hard', text:'Si se compara su rendimiento con las Funciones en Línea (Inline), ¿qué advertencia general aplica a las de Múltiples Declaraciones?', opts:['Son infinitamente más rápidas que las Inline','Rinden igual porque el motor las compila al mismo bytecode','Suelen tener peor rendimiento en grandes volúmenes de datos porque no actúan como vistas parametrizadas optimizables, sino que ejecutan código imperativo fila a fila','No consumen memoria RAM'], ans:2, exp:'La matriz recomienda "Tabla en Línea para rendimiento óptimo". Las de Múltiples Declaraciones ocultan su código al optimizador en una variable de tabla en memoria, afectando el rendimiento en consultas masivas.'},
+    {topic:'Múltiples Declaraciones', diff:'medium', text:'Si omites el bloque BEGIN...END en la creación de una función de Múltiples Declaraciones, ¿qué sucederá?', opts:['Se transformará automáticamente en una función escalar','Se ejecutará normalmente ignorando las variables locales','SQL Server arrojará un error de sintaxis porque su uso es estructuralmente obligatorio en este tipo de función','El Optimizador la convertirá en una Inline TVF'], ans:2, exp:'El uso de BEGIN/END es "Obligatorio" según la Matriz de Decisión.'},
+    {topic:'Múltiples Declaraciones', diff:'medium', text:'¿Cómo se llama este tipo de UDF en la documentación técnica oficial?', opts:['Multi-statement Table-Valued Functions (MTVF)','Complexe Array Return Functions','Dynamic Matrix UDF','Inline Multi-Table Functions'], ans:0, exp:'En español "Funciones de tabla de múltiples declaraciones", técnicamente conocidas como Multi-statement Table-Valued Functions (MTVF).'},
+    {topic:'Comparativa', diff:'medium', text:'Según la "Matriz de Decisión", ¿cuál es el caso de uso ideal recomendado para elegir una Función Escalar?', opts:['Al consultar millones de registros de auditoría','Solo cuando la lógica requiera pasos intermedios complejos','Para cálculos simples y matemáticos que devuelven 1 solo valor','Para generar reportes gráficos en SSRS'], ans:2, exp:'La recomendación de oro indica: "Elige Escalar para cálculos simples".'},
+    {topic:'Comparativa', diff:'medium', text:'Según la "Matriz de Decisión", ¿cuándo se debe elegir construir una Tabla En Línea (Inline)?', opts:['Para cálculos numéricos estáticos','Para obtener un rendimiento óptimo en consultas que actúan como vistas parametrizadas','Únicamente cuando se requiere usar cursores y bucles WHILE','Cuando el servidor carece de recursos de memoria'], ans:1, exp:'Se recomienda: "Tabla en Línea para rendimiento óptimo en consultas".'},
+    {topic:'Comparativa', diff:'hard', text:'Según la "Matriz de Decisión", ¿qué justifica optar por una Función de Tabla de Múltiples Declaraciones en vez de una Inline?', opts:['Que la de múltiples declaraciones consume menos CPU','Que solo la de múltiples declaraciones admite parámetros','Debe elegirse "solo cuando la lógica requiera pasos intermedios complejos" que no caben en un único SELECT','No hay justificación, las Inline siempre son superiores y las otras están obsoletas'], ans:2, exp:'La regla final: "y Múltiples Declaraciones solo cuando la lógica requiera pasos intermedios complejos".'},
+    {topic:'Comparativa', diff:'hard', text:'Comparando la "Definición de Salida" (RETURNS) entre las tres UDF, ¿cuál es la diferencia visual inmediata?', opts:['Escalar: RETURNS [Tipo]; Inline: RETURNS TABLE; Múltiples: RETURNS @Var TABLE(Esquema)','Escalar: RETURN; Inline: RETURNS(1); Múltiples: RETURNS(*)','Todas usan la misma firma: RETURNS DATA','Escalar y Múltiples no usan RETURNS, solo la Inline lo usa'], ans:0, exp:'La matriz detalla: Escalar usa RETURNS DataType. Inline usa RETURNS TABLE. Múltiples usa RETURNS @Variable TABLE (...).'},
+    {topic:'Comparativa', diff:'hard', text:'Si tienes un bloque lógico que suma dos variables locales y quieres el resultado devuelto a través de un SELECT, ¿qué función(es) requiere(n) el prefijo `dbo.`?', opts:['Solo la de Tabla Múltiple','Únicamente la Función Escalar','La Función Escalar y la Tabla en Línea','Ninguna si la base de datos se llama master'], ans:1, exp:'La invocación de la Función Escalar exige obligatoriamente el prefijo de esquema `dbo.NombreFuncion()` en la instrucción SELECT. Las TVF no lo requieren de manera estricta al ir en el FROM.'},
+    {topic:'Comparativa', diff:'medium', text:'Revisa los cuerpos de las funciones. ¿Qué función se limita a contener un único RETURN que envuelve una instrucción SELECT?', opts:['Función Escalar','Tabla Múltiples Declaraciones','Tabla En Línea (Inline TVF)','Procedimiento Almacenado'], ans:2, exp:'El "Cuerpo de la Función" de la Tabla en Línea se define como: "Un único RETURN (SELECT...)".'},
+    {topic:'Comparativa', diff:'easy', text:'¿Qué tipo de función NO devuelve "Múltiples Filas/Columnas"?', opts:['Tabla En Línea','Función Escalar','Tabla Múltiples Declaraciones','Vistas Dinámicas'], ans:1, exp:'La Función Escalar devuelve estrictamente 1 Solo Valor.'},
+    {topic:'Comparativa', diff:'hard', text:'Observa estas sintaxis de retorno: A) RETURN @var; B) RETURN (SELECT...); C) RETURN;. ¿A qué UDF corresponde la sintaxis "C"?', opts:['Tabla En Línea','Función Escalar','Ninguna es válida en SQL','Tabla Múltiples Declaraciones (Retorno Implícito)'], ans:3, exp:'La matriz detalla que la sintaxis de Múltiples Declaraciones es "RETURN; (Implícito)".'},
+    {topic:'Comparativa', diff:'medium', text:'Si necesitas utilizar variables temporales (@Temp) e instrucciones IF..ELSE dentro de tu función para decidir qué datos extraer de las tablas, ¿cuál de las funciones de tabla DEBES elegir obligatoriamente?', opts:['Tabla En Línea (Inline TVF)','Ninguna, eso solo se puede hacer en funciones escalares','Tabla Múltiples Declaraciones','Vista indexada'], ans:2, exp:'Dado que la Inline TVF NO admite bloque BEGIN...END ni lógica estructurada por pasos, la única opción para aplicar lógica condicional compleja y pasos intermedios devolviendo una tabla es la de Múltiples Declaraciones.'},
+    {topic:'Comparativa', diff:'hard', text:'El Optimizador de Consultas de SQL trata a una de estas funciones como si pegara directamente su código dentro de la consulta principal (macro-expansión). ¿A cuál?', opts:['A la Tabla de Múltiples Declaraciones','A la Función Escalar','A la Tabla En Línea (Inline TVF)','A los Procedimientos Almacenados Cifrados'], ans:2, exp:'Al actuar como "vistas parametrizadas" y carecer de un bloque imperativo (BEGIN..END), las Inline TVF son integradas (inline) directamente por el optimizador, garantizando su alta optimización y velocidad.'}
   ],
-  req: [
-    {topic:'Stakeholders', diff:'medium', text:'Según Wiegers y Beatty, ¿cuál es la consideración primordial sobre los stakeholders?', opts:['Validar la arquitectura técnica una vez finalizada la programación','Son exclusivamente los usuarios finales del software','Son la fuente primaria de requerimientos y el éxito depende de su gestión','Representan una influencia secundaria tras la fase de diseño'], ans:2, exp:'Los autores enfatizan que los stakeholders proveen la base informativa esencial para definir qué debe hacer el sistema. [cite: 3, 10, 11]'},
-    {topic:'Tipos de Requerimientos', diff:'easy', text:'¿Qué describe mejor a un requerimiento de negocio según el material?', opts:['Exportar reportes mensuales en formato PDF','Capacitar al personal en el uso del nuevo CRM','Objetivos organizacionales medibles y estratégicos que justifican el proyecto','Registrar nuevos clientes en menos de segundos'], ans:2, exp:'Los requerimientos de negocio son objetivos organizacionales medibles y estratégicos que justifican la existencia del proyecto. [cite: 12, 17, 18]'},
-    {topic:'Stakeholders', diff:'hard', text:'En la clasificación técnica, ¿qué categoría describe a aquellos con "Bajo poder / Alto interés"?', opts:['Entidades regulatorias que solo intervienen en auditorías','Suelen ser usuarios finales que requieren comunicación constante pero no tienen autoridad sobre el alcance','Socios comerciales no afectados por la operación','Directivos que financian y definen prioridades'], ans:1, exp:'Este grupo se ve muy afectado por el sistema y necesita estar informado, aunque no tome decisiones directas de presupuesto o estrategia. [cite: 21, 24, 25]'},
-    {topic:'SMART', diff:'medium', text:'Al redactar bajo SMART, ¿qué descuida la frase: "El sistema debe ser fácil de usar"?', opts:['El tiempo (Time-bound)','La relevancia (Relevant)','La medición (Measurable)','La alcanzabilidad (Achievable)'], ans:2, exp:'La facilidad de uso es subjetiva sin métricas específicas; se deben definir indicadores como el número de pasos o tiempo de aprendizaje. [cite: 39, 44, 45]'},
-    {topic:'Requerimientos Especiales', diff:'medium', text:'¿Cuál es la característica principal de los requerimientos de transición?', opts:['Establecen límites de lo que NO debe hacer','Definen la lógica permanente','Son capacidades temporales necesarias para migrar del estado actual al nuevo','Son opcionales para reducir costos'], ans:2, exp:'Son capacidades temporales necesarias para migrar, como la migración de datos históricos, que dejan de ser necesarios una vez en producción. [cite: 48, 54, 55]'},
-    {topic:'Requerimientos Especiales', diff:'medium', text:'"El sistema no permitirá la modificación de facturas después de emitidas". ¿A qué categoría pertenece?', opts:['Stakeholder externo','Funcional de reporte','Transición','Inverso'], ans:3, exp:'Los requerimientos inversos definen explícitamente las prohibiciones o límites de lo que el sistema NO debe realizar. [cite: 56, 60, 61]'},
-    {topic:'Modelado', diff:'medium', text:'¿Cuál es la ventaja principal del prototipado?', opts:['Retroalimentación temprana mediante representación visual','Es la técnica más económica','Reemplaza entrevistas','Garantiza código sin errores'], ans:0, exp:'Permite retroalimentación temprana al ayudar a los stakeholders a visualizar necesidades y corregir malentendidos antes de codificar. [cite: 70, 71, 72]'},
-    {topic:'No Funcionales', diff:'medium', text:'¿Qué impacto tienen los requerimientos no funcionales?', opts:['Justifican el retorno de inversión','Determinan solo el color de la interfaz','Influyen directamente en la arquitectura, infraestructura y tecnologías','Son opcionales'], ans:2, exp:'Influyen directamente en la arquitectura y decisiones como el uso de servidores específicos basándose en escalabilidad y disponibilidad. [cite: 79, 86, 87]'},
-    {topic:'UML', diff:'medium', text:'¿Cómo se relacionan los requerimientos funcionales con UML?', opts:['Solo para seguridad','Se modelan mediante diagramas de casos de uso','Reemplazan el texto SMART','Solo documentan prohibiciones'], ans:1, exp:'Los funcionales se modelan mediante diagramas de casos de uso para mostrar interacciones usuario-sistema. [cite: 183, 186, 295]'},
-    {topic:'UDF', diff:'hard', text:'En un DFD, ¿cuál interacción es considerada inválida?', opts:['Proceso hacia Almacén','Flujo bidireccional entre Procesos','Entidad Externa hacia Almacén','Proceso hacia Entidad Externa'], ans:2, exp:'Las entidades externas solo pueden enviar o recibir datos a través de un proceso que actúe como interfaz. [cite: 404, 408, 409]'},
-    {topic:'UML', diff:'hard', text:'En un diagrama de clases, ¿qué implica una relación de composición entre clase A y B?', opts:['B puede existir independientemente','B es una versión general de A','B tiene un ciclo de vida totalmente dependiente de A','Ambas heredan de una superclase'], ans:2, exp:'La composición representa una relación fuerte de "parte-todo" donde, si el contenedor desaparece, las partes también. [cite: 224, 229, 230]'},
-    {topic:'DFD', diff:'medium', text:'¿Cuál es la restricción de procesos recomendada en un DFD Nivel 0?', opts:['Sin límite','Máximo 9 para mantener legibilidad','Hasta 3 procesos','Exactamente 1 macroproceso'], ans:1, exp:'Debe incluir un máximo de 9 procesos para mantener la legibilidad y evitar diagramas excesivamente complejos. [cite: 412, 415, 416]'},
-    {topic:'DFD', diff:'medium', text:'¿Qué estipula el "Equilibrio Vertical" en la descomposición de DFDs?', opts:['Igual número de almacenes y procesos','Diagrama hijo no puede recibir entradas que el padre no reciba originalmente','Numeración ascendente obligatoria','Entidades en todos los niveles'], ans:1, exp:'Un diagrama hijo no puede recibir entradas que el proceso padre no reciba originalmente, asegurando consistencia de flujos. [cite: 427, 429, 430]'},
-    {topic:'DFD', diff:'medium', text:'¿Cuál es la composición recomendada para el nombre de un Proceso?', opts:['Nombre del departamento','Código numérico únicamente','Un verbo seguido de un sustantivo','Sustantivo abstracto'], ans:2, exp:'Se recomienda un verbo seguido de un sustantivo para describir claramente la acción sobre el objeto o dato. [cite: 444, 448]'},
-    {topic:'Modelado', diff:'medium', text:'¿Cuál es la diferencia fundamental entre el modelo lógico y físico de datos?', opts:['Físico para usuarios, lógico para devs','No existe diferencia','Lógico usa ER, físico usa UML','Lógico independiente del gestor, físico describe implementación real'], ans:3, exp:'El modelo lógico es independiente del gestor, mientras que el físico añade detalles como índices y tipos de datos específicos. [cite: 215, 219, 222, 223]'}
+  anasys: [
+    // --- I. CUESTIONARIO: INGENIERÍA DE REQUISITOS (27 Preguntas) ---
+    {topic:'Stakeholders', diff:'medium', text:'Según Karl Wiegers y Joy Beatty, ¿cuál es la consideración primordial sobre los stakeholders?', opts:['Validar la arquitectura técnica al finalizar','Son exclusivamente los usuarios finales','Influencia secundaria tras el diseño','Son la fuente primaria de los requerimientos y el éxito depende de su gestión'], ans:3, exp:'Proveven la base informativa esencial para definir qué debe hacer el sistema.'},
+    {topic:'Tipos de Requisitos', diff:'easy', text:'¿Qué describe mejor un requerimiento de negocio según el material?', opts:['Exportar reportes en PDF','Capacitar al personal de ventas','Objetivos organizacionales medibles y estratégicos que justifican el proyecto','Registro en menos de 5 segundos'], ans:2, exp:'Son metas estratégicas que justifican la existencia del proyecto.'},
+    {topic:'Stakeholders', diff:'hard', text:'En la clasificación técnica, ¿quiénes son los de "Bajo poder / Alto interés"?', opts:['Entidades regulatorias','Usuarios finales afectados que requieren comunicación pero no tienen autoridad sobre el alcance','Socios comerciales no afectados','Directivos financieros'], ans:1, exp:'Este grupo se ve muy afectado y necesita estar informado.'},
+    {topic:'Tipos de Requisitos', diff:'medium', text:'¿Qué distingue a un requerimiento de stakeholder de uno funcional?', opts:['Funcional es estratégico, stakeholder técnico','Stakeholder obligatorio, funcional opcional','Stakeholder expresa necesidad/valor; funcional define operaciones técnicas','Son términos sinónimos'], ans:2, exp:'Stakeholders dicen QUÉ necesitan; funcionales definen CÓMO técnicamente.'},
+    {topic:'SMART', diff:'medium', text:'¿Qué aspecto se descuida en: "El sistema debe ser fácil de usar para todos"?', opts:['El tiempo (Time-bound)','La relevancia (Relevant)','La medición (Measurable)','La alcanzabilidad (Achievable)'], ans:2, exp:'La facilidad es subjetiva; requiere métricas como número de pasos o tiempo de aprendizaje.'},
+    {topic:'Tipos de Requisitos', diff:'medium', text:'¿Cuál es la característica principal de los requerimientos de transición?', opts:['Límites de lo que no debe hacerse','Lógica permanente','Actividad que el equipo ignora','Capacidades temporales necesarias para migrar del estado actual al nuevo'], ans:3, exp:'Dejan de ser necesarios una vez que el sistema está en producción (ej. migración de datos).'},
+    {topic:'Tipos de Requisitos', diff:'hard', text:'"El sistema no permitirá la modificación de facturas emitidas" es un:', opts:['Requerimiento de stakeholder externo','Funcional de reporte','Requerimiento de transición','Requerimiento inverso'], ans:3, exp:'Definen explícitamente las prohibiciones de lo que el sistema NO debe realizar.'},
+    {topic:'Gestión', diff:'medium', text:'¿Por qué fallan proyectos por mala gestión de stakeholders y no por mala programación?', opts:['Programar es fácil','Stakeholders escriben el código','Stakeholders suelen sabotear','Stakeholders definen expectativas, prioridades y la aceptación final'], ans:3, exp:'Si lo construido no cumple las expectativas, el sistema es un fracaso aunque sea perfecto técnicamente.'},
+    {topic:'Técnicas', diff:'medium', text:'¿Cuál es la ventaja principal del prototipado?', opts:['Retroalimentación temprana mediante representación visual','Es la técnica más económica','Reemplaza encuestas','Garantiza código sin errores'], ans:0, exp:'Ayuda a visualizar necesidades y corregir malentendidos antes de codificar.'},
+    {topic:'Tipos de Requisitos', diff:'hard', text:'¿Qué impacto tienen los requerimientos no funcionales?', opts:['Justifican ROI','Solo definen colores','Influyen directamente en arquitectura, infraestructura y tecnologías','Son opcionales'], ans:2, exp:'Escalabilidad y disponibilidad dictan el uso de servidores o microservicios.'},
+    {topic:'Tipos de Requisitos', diff:'medium', text:'Caso Universidad: ¿Cuál es un requerimiento de transición crítico?', opts:['Consultar calificaciones en línea','No permitir registro con deudas','Migración de todos los historiales académicos de la base antigua','Soportar usuarios simultáneos'], ans:2, exp:'Es un proceso necesario solo durante el cambio de sistema.'},
+    {topic:'Tipos de Requisitos', diff:'medium', text:'¿Qué evita principalmente el requerimiento inverso?', opts:['Cumplimiento legal','Migración de datos legacy','El "scope creep" o expansión no controlada del alcance','Contratar especialistas'], ans:2, exp:'Evita malentendidos donde el cliente asume que funciones extra están incluidas.'},
+    {topic:'SMART', diff:'easy', text:'¿Qué significa que un objetivo sea "Alcanzable" (Achievable)?', opts:['Realista considerando habilidades, recursos y circunstancias','Código fácil para Juniors','Completar en una semana','Aprobado por todos'], ans:0, exp:'Un objetivo inalcanzable desmotiva al equipo y lleva al fracaso.'},
+    {topic:'Modelado', diff:'medium', text:'"El sistema debe permitir el préstamo de libros" se transformará en:', opts:['Casos de Uso o Historias de Usuario','Presupuesto de infraestructura','Plan de capacitación','Manual de identidad'], ans:0, exp:'Son la base para modelar la interacción usuario-sistema.'},
+    {topic:'Tipos de Requisitos', diff:'medium', text:'Diferencia entre requerimiento de stakeholder y de negocio:', opts:['Stakeholder enfoca expectativas individuales; negocio en objetivos organizacionales','Negocio es solo para lucro','No hay diferencia','Negocio es técnico, stakeholder visual'], ans:0, exp:'Negocio busca eficiencia global; stakeholder define utilidad operativa del rol.'},
+    {topic:'Tipos de Requisitos', diff:'medium', text:'"Interfaz intuitiva y accesible para personas con discapacidad visual" es:', opts:['Portabilidad','Mantenibilidad','Disponibilidad','Usabilidad'], ans:3, exp:'La usabilidad abarca facilidad de uso y accesibilidad.'},
+    {topic:'Calidad', diff:'medium', text:'¿Error en: "El sistema debe manejar datos de clientes"?', opts:['Inconsistencia lógica','Falta de medición','Redacción vaga: no especifica acciones (crear, editar, eliminar)','Ambigüedad técnica'], ans:2, exp:'Debe ser específico para que el desarrollador sepa qué programar.'},
+    {topic:'Gestión', diff:'medium', text:'¿Qué ocurre si el proyecto carece de requerimientos de negocio?', opts:['Interfaces feas','Pierde dirección estratégica y justificación sólida','Uso de cualquier lenguaje','No habrá internet'], ans:1, exp:'Sin metas de negocio, el sistema puede no aportar valor real.'},
+    {topic:'Tipos de Requisitos', diff:'hard', text:'"No permitir editar diagnósticos históricos" en un hospital sirve para:', opts:['Ahorrar espacio','Facilitar migración','Mantener integridad legal y trazabilidad','Velocidad de respuesta'], ans:2, exp:'Asegura que registros clínicos sean inalterables por ética y ley.'},
+    {topic:'Transición', diff:'hard', text:'¿Propósito de la "Operación paralela"?', opts:['Redundancia de DB','Doblar velocidad','Mitigar riesgos verificando resultados sistema nuevo vs antiguo','Evitar pruebas unitarias'], ans:2, exp:'Permite comparar salidas en tiempo real para asegurar lógica del nuevo sistema.'},
+    {topic:'Costos', diff:'hard', text:'¿Dónde ocurren los mayores costos del cambio tecnológico?', opts:['Fase de programación','Presentaciones preventa','Licencias OS','Implementación y transición (reprocesos, migración)'], ans:3, exp:'Gestionar el cambio y asegurar datos antiguos es más caro que codificar.'},
+    {topic:'Técnicas', diff:'medium', text:'¿Técnica para procesos que el usuario hace mecánicamente y no sabe explicar?', opts:['Encuestas masivas','Análisis documental antiguo','Entrevistas directivas','Observación directa (Etnografía)'], ans:3, exp:'Permite identificar pasos que el usuario omite por hábito.'},
+    {topic:'Tipos de Requisitos', diff:'hard', text:'Disponibilidad del 99.9% implica:', opts:['99.9% transacciones en < 1 seg','Sin errores tipográficos','Acceso simultáneo total','Operativo casi siempre (pocos minutos de caída al mes)'], ans:3, exp:'Mide el uptime o tiempo de actividad del servicio.'},
+    {topic:'Modelado', diff:'medium', text:'¿Relación entre funcionales y diagramas UML?', opts:['Solo para seguridad','Se modelan mediante diagramas de Casos de Uso','Reemplazan texto SMART','Solo para prohibiciones'], ans:1, exp:'UML provee herramientas para validar lógica funcional.'},
+    {topic:'Stakeholders', diff:'medium', text:'¿Rol del "Equipo técnico" como stakeholder interno?', opts:['Aportar requerimientos de mantenibilidad y factibilidad','Pagar facturas de nube','Obedecer sin opinar','Definir metas de utilidades'], ans:0, exp:'Deben asegurar que el sistema sea técnicamente sólido.'},
+    {topic:'Tipos de Requisitos', diff:'medium', text:'"Soportar crecimiento del 50% en volumen de datos anual" es:', opts:['Funcionalidad de archivo','Requerimiento inverso','Escalabilidad','Transición'], ans:2, exp:'Capacidad de manejar carga creciente sin degradar rendimiento.'},
+    {topic:'Gestión', diff:'medium', text:'Conclusión fundamental sobre el inicio de un proyecto:', opts:['Cambiar requerimientos es gratis','Inicia identificando necesidades estratégicas y de stakeholders','Éxito es solo no tener errores sintácticos','Elegir framework antes que hablar con cliente'], ans:1, exp:'Entender el porqué y para quién es el primer paso crítico.'},
+
+    // --- II. MODELADO DE DATOS Y UML (26 Preguntas) ---
+    {topic:'Modelado', diff:'medium', text:'Diferencia fundamental entre modelo lógico y físico:', opts:['Físico para usuarios','No hay diferencia','Lógico usa ER y físico UML','Lógico es independiente del gestor; físico describe implementación real'], ans:3, exp:'El lógico se centra en reglas; el físico define tablas y tipos concretos.'},
+    {topic:'UML', diff:'hard', text:'En Diagrama de Clases, ¿qué implica la Composición entre A y B?', opts:['B vive sin A','B es versión general','B tiene ciclo de vida totalmente dependiente de A (Parte-Todo fuerte)','Herencia'], ans:2, exp:'Si el contenedor desaparece, las partes también.'},
+    {topic:'UML', diff:'medium', text:'Validación de pago obligatoria en cada compra se representa como:', opts:['Asociación simple','<<Include>>','Generalización','<<Extend>>'], ans:1, exp:'Include es para funcionalidades obligatorias del caso base.'},
+    {topic:'Modelado', diff:'medium', text:'Técnicamente, ¿qué son las "Restricciones" en modelado?', opts:['Límites hardware','Normas de negocio que garantizan integridad y consistencia','Tiempo desarrollo diagramas','Atributos opcionales'], ans:1, exp:'Aseguran que datos cumplan reglas lógicas (ID único, valores mínimos).'},
+    {topic:'UML', diff:'easy', text:'¿Qué representa un "Actor" en Casos de Uso?', opts:['Base de datos interna','Programador','Objeto con métodos','Rol de usuario o sistema externo al interactuar'], ans:3, exp:'Entidades externas que solicitan o reciben servicios.'},
+    {topic:'UML', diff:'medium', text:'¿Propósito del diagrama de estados?', opts:['Modelar comportamiento dinámico ante eventos','Requisitos en tabla','Jerarquía clases','Visualizar servidores'], ans:0, exp:'Captura cómo un objeto transita entre estados en su ciclo de vida.'},
+    {topic:'Modelado', diff:'medium', text:'¿Qué sucede si se omiten reglas de negocio en el modelado?', opts:['Programadores inventan reglas','Más estética','Errores funcionales y software no escalable','Menor tiempo desarrollo'], ans:2, exp:'Sin reglas, la base de datos permitirá estados inválidos.'},
+    {topic:'Modelado', diff:'medium', text:'¿Sección de clase para acciones como "calcular total"?', opts:['Superior (Nombre)','Inferior (Métodos/Operaciones)','Fuera del rectángulo','Central (Atributos)'], ans:1, exp:'Se dividen en nombre, atributos y métodos.'},
+    {topic:'UML', diff:'medium', text:'Ventaja de agregación frente a asociación simple:', opts:['Partes mueren con contenedor','Representa herencia','Reduce clases','Expresa relación "todo-parte" de forma débil'], ans:3, exp:'Aclara que una clase contiene a otra aunque sean independientes.'},
+    {topic:'UML', diff:'medium', text:'Función del "Límite del Sistema" (System Boundary):', opts:['Decorativo','Define alcance: Casos dentro y Actores fuera','Separar funcional de no funcional','Indicar fin proceso'], ans:1, exp:'Ayuda a visualizar qué procesos pertenecen al sistema.'},
+    {topic:'Modelado', diff:'medium', text:'¿Cómo se relaciona un funcional con el modelo UML?', opts:['Se ignora','Solo restricción DB','Se traduce directamente en Casos de Uso','Estado inicial'], ans:2, exp:'Requerimientos funcionales describen lo que el sistema hace.'},
+    {topic:'UML', diff:'easy', text:'"Puede permitir descuento SI tiene cupón":', opts:['<<Extend>>','Composición','<<Include>>','Asociación'], ans:0, exp:'Funcionalidad opcional que extiende el flujo principal.'},
+    {topic:'Modelado', diff:'medium', text:'Objetivo clave del modelado antes de implementar:', opts:['Sustituir entrevistas','Escribir código ya','Organizar información de forma lógica para evitar redundancia','Garantizar no mantenimiento'], ans:2, exp:'Permite detectar duplicados y estructurar eficientemente.'},
+    {topic:'UML', diff:'easy', text:'Elemento que indica el punto donde finaliza un proceso:', opts:['Rectángulo','Círculo sólido','Flecha','Círculo con borde doble'], ans:3, exp:'Círculo sólido es inicio; círculo con doble borde es fin.'},
+    {topic:'Modelado', diff:'medium', text:'Importancia de la "Propuesta Técnica":', opts:['Manual usuario','Jerarquía devs','Costo monetario','Puente entre idea y desarrollo; define alcance y expectativas'], ans:3, exp:'Justifica proyecto y delimita qué se incluirá evitando ambigüedades.'},
+    {topic:'UML', diff:'medium', text:'¿Característica de relación de Generalización?', opts:['Conexión temporal','Relación "es-un" (herencia)','Orden alfabético','Contenedor físico'], ans:1, exp:'Permite heredar propiedades de un elemento más general.'},
+    {topic:'Modelado', diff:'medium', text:'Error común a evitar al modelar:', opts:['Incluir actores','Muchos colores','Duplicar información innecesariamente','Definir relaciones'], ans:2, exp:'La redundancia es un fallo que el modelado busca corregir.'},
+    {topic:'UML', diff:'easy', text:'¿Qué representa un atributo?', opts:['Acción','Propiedad o característica que describe a la entidad','Conexión física','Nombre clase'], ans:1, exp:'Son los datos específicos como nombre o teléfono.'},
+    {topic:'UML', diff:'medium', text:'UML para representar requerimientos estructurales:', opts:['Diagrama estados','Diagrama casos uso','Diagrama de clases','Propuesta técnica'], ans:2, exp:'Muestran estructura estática, entidades y relaciones.'},
+    {topic:'UML', diff:'hard', text:'Consecuencia de modelar UML con información incorrecta:', opts:['Se arregla solo','Cliente no nota','UML inventa funciones','Diagrama técnicamente correcto pero funcionalmente inútil'], ans:3, exp:'UML refleja fielmente la comprensión (aunque sea errónea).'},
+    {topic:'UML', diff:'medium', text:'Simbología de Agregación:', opts:['Flecha punteada','Sin nombres','Diamante hueco en clase contenedora','Círculo sólido'], ans:2, exp:'Es el símbolo estándar en UML para agregación.'},
+    {topic:'Modelado', diff:'medium', text:'¿Qué significa modelo conceptual de "Nivel alto"?', opts:['Solo para ejecutivos','Requiere servidores potentes','Arriba en el dibujo','Enfocado en el negocio sin detalles técnicos de implementación'], ans:3, exp:'Define QUÉ datos existen, no CÓMO se guardan físicamente.'},
+    {topic:'UML', diff:'medium', text:'¿Función de una Transición en estados?', opts:['Impedir cambio','Almacenar datos','Representar cambio de un estado a otro ante un evento','Nombre clase'], ans:2, exp:'Muestran el flujo del comportamiento dinámico.'},
+    {topic:'Modelado', diff:'easy', text:'¿Qué es una Entidad?', opts:['Error duplicación','Función matemática','Lenguaje DB','Objetos principales sobre los cuales se guarda información'], ans:3, exp:'Ej: Cliente, Producto o Venta.'},
+    {topic:'UML', diff:'medium', text:'¿Por qué UML es "unificado"?', opts:['Un solo idioma nativo','Une hardware y software','Solo un diagrama','Visualiza, especifica, construye y documenta bajo un estándar común'], ans:3, exp:'Integra diversas notaciones previas en un estándar único.'},
+    {topic:'UML', diff:'hard', text:'Diferencia Composición vs Agregación:', opts:['Composición es comportamiento','Composición implica dependencia total del ciclo de vida; agregación no','Composición diamante blanco','Composición solo para Java'], ans:1, exp:'En composición la parte no vive sin el todo.'},
+
+    // --- III. DFD: DIAGRAMA DE FLUJO DE DATOS (26 Preguntas) ---
+    {topic:'Conectividad', diff:'hard', text:'¿Interacción inválida en DFD?', opts:['Proceso a Almacén','Bidireccional entre Procesos','Entidad Externa a Almacén','Proceso a Entidad'], ans:2, exp:'Entidades externas solo hablan con procesos.'},
+    {topic:'DFD', diff:'medium', text:'¿Restricción de procesos en Nivel 0?', opts:['Sin límite','Máximo 9 para legibilidad','Hasta 3','Exactamente uno'], ans:1, exp:'Superar 9 procesos genera diagramas excesivamente complejos.'},
+    {topic:'Notación', diff:'medium', text:'¿Representación de Proceso en Yourdon/De Marco?', opts:['Rectángulo redondeado','Cuadrado','Dos líneas paralelas','Círculo'], ans:3, exp:'Yourdon utiliza formas circulares para transformaciones.'},
+    {topic:'DFD', diff:'hard', text:'¿Qué estipula el "Equilibrio Vertical"?', opts:['Almacenes = Procesos','Diagrama hijo no recibe entradas que el padre no reciba originalmente','Numeración ascendente','Entidades en todo nivel'], ans:1, exp:'La consistencia de flujos entre niveles.'},
+    {topic:'Flujos', diff:'medium', text:'¿Qué define a un "Flujo de Diálogo"?', opts:['Combinación de consulta y actualización','Solo borrar','Mensajes error externos','Comunicación verbal'], ans:0, exp:'Proceso lee datos para modificarlos o crear registros.'},
+    {topic:'Notación', diff:'medium', text:'¿Composición recomendada para nombre de Proceso?', opts:['Nombre departamento','Código numérico','Verbo + Sustantivo','Sustantivo abstracto'], ans:2, exp:'Describe claramente la acción sobre el objeto/dato.'},
+    {topic:'Almacenes', diff:'hard', text:'¿Naturaleza física del Almacén de Datos?', opts:['Generador externo','Conexión red','Archivos digitales únicamente','Cualquier depósito lógico (papel o DB)'], ans:3, exp:'El DFD es lógico; el soporte físico es irrelevante.'},
+    {topic:'DFD', diff:'hard', text:'¿Propósito del Diagrama de Contexto?', opts:['Sustituir diccionarios','Enumerar almacenes','Lógica primitiva','Delimitar el sistema e identificar fronteras'], ans:3, exp:'Define qué está dentro y fuera del alcance.'},
+    {topic:'Entidades', diff:'medium', text:'¿Afirmación correcta sobre Entidades Externas?', opts:['Solo envían datos','Personas, departamentos o sistemas que intercambian información','Siempre círculos','Descompuestas en hijos'], ans:1, exp:'Actúan como fuentes o sumideros de datos.'},
+    {topic:'Flujos', diff:'medium', text:'Un flujo de actualización sirve para:', opts:['Crear, borrar o cambiar valor de atributo almacenado','Consultar condición','Transferir entre externos','Definir nombre proceso'], ans:0, exp:'Modifican activamente el contenido del almacén.'},
+    {topic:'Notación', diff:'easy', text:'¿Qué indica una flecha en DFD?', opts:['Dirección en que viajan datos de composición conocida','Cantidad registros','Secuencia temporal','Jerarquía mando'], ans:0, exp:'Conecta componentes y muestra el sentido del movimiento.'},
+    {topic:'Conectividad', diff:'hard', text:'¿Almacén puede enviar a otro Almacén directo?', opts:['Sí, digitales','Sí, flujo diálogo','No, excepto Nivel 0','No, conexión directa prohibida'], ans:3, exp:'Requiere proceso intermedio que lea de uno y escriba en otro.'},
+    {topic:'DFD', diff:'medium', text:'Característica de "Funciones Primitivas":', opts:['Procesos que no requieren mayor descomposición','Solo externos','Contexto','Solo una entrada'], ans:0, exp:'Nivel de detalle más bajo; función simple de describir.'},
+    {topic:'Notación', diff:'medium', text:'Gane/Sarson: Almacén de Datos es:', opts:['Rectángulo abierto derecho con sección cuadrada izquierda','Rombo','Dos líneas paralelas','Cilindro'], ans:0, exp:'Incluye identificador en cuadro y nombre en espacio abierto.'},
+    {topic:'DFD', diff:'hard', text:'Numeración procesos hijos en expansión:', opts:['Letras','Reiniciar desde 1','Derivarse del padre (ej: padre 2 -> hijos 2.1, 2.2)','Secuencia global'], ans:2, exp:'Mantiene trazabilidad jerárquica.'},
+    {topic:'Flujos', diff:'medium', text:'Función del "Flujo de Consulta":', opts:['Renombrar atributos','Eliminar redundancia','Utilizar valores o comprobar condiciones sin modificar','Añadir atributos'], ans:2, exp:'Permite tomar decisiones sin alterar el estado del almacén.'},
+    {topic:'DFD', diff:'medium', text:'¿Por qué Entidades Externas suelen estar solo en Contexto?', opts:['Solo con macroprocesos','Pierden relevancia','Evitar saturar diagramas inferiores con detalles del entorno','Yourdon prohíbe'], ans:2, exp:'Permite concentrarse exclusivamente en lógica interna.'},
+    {topic:'Conectividad', diff:'hard', text:'¿Restricción entre Almacén y Entidad Externa?', opts:['Nivel 0 permitido','Si es subsistema','No pueden conectarse directamente','Solo consulta'], ans:2, exp:'Deben ser procesados por una función antes de entregarse al exterior.'},
+    {topic:'DFD', diff:'medium', text:'Nivel 0 vs Contexto:', opts:['Nivel 0 elimina externas','Bidireccionales solo Nivel 0','Desglosa macroproceso y muestra almacenes','UML'], ans:2, exp:'Nivel 0 muestra arquitectura funcional y de datos interna.'},
+    {topic:'DFD', diff:'hard', text:'Si padre recibe E1, E2, E3 y genera S1, S2, el hijo debe:', opts:['Añadir E4','Mostrar exactamente esos mismos flujos en su interfaz','Combinar todos','Ignorar S1/S2'], ans:1, exp:'Garantiza integridad; no se crea/destruye datos al cambiar nivel.'},
+    {topic:'Notación', diff:'easy', text:'Propósito de rótulo en flujo de datos:', opts:['Identificar composición conocida de datos','Clave primaria','Estética','Prioridad'], ans:0, exp:'Permite saber qué información específica se mueve.'},
+    {topic:'DFD', diff:'medium', text:'¿Qué significa alcanzar "funciones primitivas"?', opts:['Nivel indivisible y claro','Procesos a entidades','Eliminar almacenes','Volver inicio'], ans:0, exp:'Criterio de parada: sistema modelado en su totalidad.'},
+    {topic:'Notación', diff:'medium', text:'Ejemplo de nombre de proceso correcto (Gane/Sarson):', opts:['Usuario Final','Sistema RRHH','Base Datos Empleados','Calcular Nómina'], ans:3, exp:'Verbo de acción + sustantivo claro.'},
+    {topic:'Notación', diff:'medium', text:'Flecha que entra al almacén desde proceso indica:', opts:['Error','Backup','Consulta','Escritura o actualización'], ans:3, exp:'La punta señala el destino; termina en almacén, se guarda.'},
+    {topic:'DFD', diff:'medium', text:'Autor pilar citado:', opts:['Ann Mor','Gane, C. y Sarson, T.','El Ateneo','Yourdon únicamente'], ans:1, exp:'Obra de 1987 es pilar para el estándar de DFDs mencionado.'},
+    {topic:'DFD', diff:'hard', text:'¿Proceso genera salida de "información local" significa?', opts:['Impresora local','Algoritmos o lógica interna no extraída de flujos entrada','Salida idéntica','Solo sede principal'], ans:1, exp:'Transformación depende de entrada y de reglas predefinidas en el proceso.'}
   ]
 };
 
@@ -480,17 +677,12 @@ function refreshDash(){
         '<div class="hist-pct" style="color:'+col+'">'+h.pct+'%</div>'+
         '<div class="hist-info">'+
           '<div class="hist-sub">'+subj.icon+' '+subj.name+'</div>'+
-          '<div class="hist-date">'+h.qty+' preguntas · '+h.date+'</div>'+
+          '<div class="hist-date">'+h.qty+' preg. · '+h.date+'</div>'+
         '</div>'+
         '<span class="badge '+b.cls+'">'+b.label+'</span>'+
       '</div>';
     }).join('');
   }
-
-  document.querySelectorAll('.subj-card').forEach(function(c){
-    var fill = c.querySelector('.subj-bar-fill');
-    if(fill) fill.style.width = masteryOf(c.dataset.id)+'%';
-  });
 }
 
 /* CONFIG */
@@ -500,27 +692,6 @@ function openConfig(){
   gel('cfg-name').textContent = subj.name;
   gel('cfg-qcount').textContent = QB[S.selectedSubject].length + ' preguntas en el banco';
   showScreen('screen-config');
-}
-
-function setupPills(containerId, key){
-  var container = gel(containerId);
-  container.querySelectorAll('.pill').forEach(function(p){
-    p.addEventListener('click', function(){
-      container.querySelectorAll('.pill').forEach(function(x){ x.classList.remove('on'); });
-      p.classList.add('on');
-      S.cfg[key] = key==='qty' ? parseInt(p.dataset.val) : p.dataset.val;
-    });
-  });
-}
-
-function setupModes(){
-  document.querySelectorAll('.mode-card').forEach(function(m){
-    m.addEventListener('click', function(){
-      document.querySelectorAll('.mode-card').forEach(function(x){ x.classList.remove('on'); });
-      m.classList.add('on');
-      S.cfg.mode = m.dataset.val;
-    });
-  });
 }
 
 /* QUIZ */
@@ -553,7 +724,7 @@ function startQuiz(){
   S.quiz.interval = setInterval(function(){
     var e = Math.floor((Date.now()-S.quiz.startTime)/1000);
     gel('qz-timer').textContent = fmtTime(e);
-  }, 500);
+  }, 1000);
 
   renderQ();
   showScreen('screen-quiz');
@@ -563,15 +734,10 @@ function renderQ(){
   var qz = S.quiz;
   var q = qz.questions[qz.current];
   var total = qz.questions.length;
-  var letters = ['A','B','C','D'];
-
-  gel('q-num').textContent = 'PREGUNTA ' + (qz.current<9?'0':'') + (qz.current+1);
+  
   gel('qz-cnt').textContent = (qz.current+1) + '/' + total;
-  gel('q-topic').textContent = q.topic + '  ·  ' + q.diff.toUpperCase();
   gel('q-text').textContent = q.text;
   gel('qz-prog').style.width = (qz.current/total*100) + '%';
-  gel('qz-ok').textContent = qz.correct;
-  gel('qz-bad').textContent = qz.wrong;
   gel('expl').style.display = 'none';
   gel('q-fb').innerHTML = '';
   gel('btn-next').style.display = 'none';
@@ -579,7 +745,7 @@ function renderQ(){
   var optsEl = gel('opts');
   optsEl.innerHTML = q.opts.map(function(o,i){
     return '<div class="opt" data-i="'+i+'">' +
-      '<div class="opt-let">'+letters[i]+'</div>' +
+      '<div class="opt-let">'+String.fromCharCode(65+i)+'</div>' +
       '<span>'+o+'</span>' +
       '</div>';
   }).join('');
@@ -602,14 +768,8 @@ function answerQ(idx){
   var t = Math.floor((Date.now()-qz.qStart)/1000);
   qz.times.push(t);
   var ok = (idx === q.ans);
-  qz.answers.push({ chosen: idx, correct: q.ans, ok: ok });
+  qz.answers.push({ chosen: idx, ok: ok });
   if(ok) qz.correct++; else qz.wrong++;
-
-  gel('qz-ok').textContent = qz.correct;
-  gel('qz-bad').textContent = qz.wrong;
-  gel('q-fb').innerHTML = ok
-    ? '<span class="fb-ok">✓ Correcto!</span>'
-    : '<span class="fb-bad">✗ Incorrecto</span>';
 
   allOpts.forEach(function(el, i){
     el.classList.add('disabled');
@@ -617,25 +777,18 @@ function answerQ(idx){
     else if(i === idx && !ok) el.classList.add('wrong');
   });
 
-  if(S.cfg.mode === 'study' && q.exp){
-    var expl = gel('expl');
-    expl.innerHTML = '<strong>Explicación:</strong> ' + q.exp;
-    expl.style.display = 'block';
+  if(S.cfg.mode === 'study'){
+    gel('q-fb').innerHTML = ok ? '<span style="color:var(--ok); font-weight:700">✓ ¡Correcto!</span>' : '<span style="color:var(--bad); font-weight:700">✗ Incorrecto</span>';
+    if(q.exp){
+      var expl = gel('expl');
+      expl.innerHTML = '<strong>Explicación:</strong> ' + q.exp;
+      expl.style.display = 'block';
+    }
   }
 
   var btn = gel('btn-next');
   btn.style.display = 'inline-flex';
   btn.textContent = qz.current >= qz.questions.length-1 ? 'Ver resultados →' : 'Siguiente →';
-}
-
-function nextQ(){
-  var qz = S.quiz;
-  if(qz.current >= qz.questions.length-1){
-    finishQuiz();
-  } else {
-    qz.current++;
-    renderQ();
-  }
 }
 
 function finishQuiz(){
@@ -648,77 +801,90 @@ function finishQuiz(){
   var subj = SUBJECTS.find(function(s){ return s.id===S.selectedSubject; });
 
   S.history.push({
-    subject: S.selectedSubject, pct: pct, qty: total, avgT: avgT,
-    date: new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})
+    subject: S.selectedSubject, pct: pct, qty: total, date: new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short'})
   });
   if(pct>=75) S.streak++; else if(pct<60) S.streak=0;
 
+  // Ring animation
   var circ = 2*Math.PI*54;
   var ring = gel('ring');
-  var col = pct>=75?'var(--ok)':pct>=60?'var(--acc4)':'var(--bad)';
-  ring.setAttribute('stroke', col);
+  ring.setAttribute('stroke', pct>=75?'var(--ok)':pct>=60?'var(--acc4)':'var(--bad)');
   ring.style.strokeDashoffset = circ;
-  setTimeout(function(){ ring.style.strokeDashoffset = circ*(1-pct/100); }, 120);
+  setTimeout(function(){ ring.style.strokeDashoffset = circ*(1-pct/100); }, 100);
 
   gel('res-pct').textContent = pct+'%';
   gel('res-badge').innerHTML = '<span class="badge '+b.cls+'" style="font-size:.9rem">'+b.label+'</span>';
   gel('res-subj-tag').textContent = subj.icon+' '+subj.name;
-
-  var msgs = [ [90,'¡Dominas este tema. Sigue así!'], [75,'Buen trabajo, sigue practicando.'], [60,'Vas bien, pero hay áreas a mejorar.'], [0, 'Repasa los temas marcados abajo.'] ];
-  var msg = msgs.find(function(m){ return pct>=m[0]; })[1];
-  gel('res-msg').textContent = msg;
-
+  gel('res-msg').textContent = pct >= 90 ? '¡Dominas este tema. Sigue así!' : (pct >= 60 ? 'Buen trabajo, sigue practicando.' : 'Repasa los temas marcados abajo.');
+  
   gel('r-ok').textContent = qz.correct;
   gel('r-bad').textContent = qz.wrong;
   gel('r-time').textContent = avgT+'s';
 
+  // Topics
   var topicMap = {};
   qz.questions.forEach(function(q, i){
     if(!topicMap[q.topic]) topicMap[q.topic] = {ok:0, n:0};
     topicMap[q.topic].n++;
-    if(qz.answers[i] && qz.answers[i].ok) topicMap[q.topic].ok++;
+    if(qz.answers[i].ok) topicMap[q.topic].ok++;
   });
   gel('topic-rows').innerHTML = Object.keys(topicMap).map(function(t){
     var d = topicMap[t];
     var p = Math.round(d.ok/d.n*100);
-    var cls = p>=75?'fg':p>=50?'fm':'fb2';
-    var col2 = p>=75?'var(--ok)':p>=50?'var(--acc4)':'var(--bad)';
     return '<div class="t-row">'+
-      '<div class="t-name">'+t+'</div>'+
-      '<div class="t-bar"><div class="t-fill '+cls+'" style="width:0%" data-p="'+p+'"></div></div>'+
-      '<div class="t-pct" style="color:'+col2+'">'+p+'%</div>'+
-      (p<60?'<span style="font-size:.75rem;color:var(--bad);margin-left:4px">⚠️</span>':'')+
+      '<div style="flex:1;font-size:.88rem">'+t+'</div>'+
+      '<div class="t-bar"><div class="t-fill '+(p>=75?'fg':p>=50?'fm':'fb2')+'" style="width:'+p+'%"></div></div>'+
+      '<div style="font-family:DM Mono;font-size:.82rem;min-width:35px;text-align:right">'+p+'%</div>'+
     '</div>';
   }).join('');
 
+  // Review list
   gel('rev-list').innerHTML = qz.questions.map(function(q,i){
     var a = qz.answers[i];
-    var ok2 = a && a.ok;
     return '<div class="rev-item">'+
-      '<div class="rev-icon">'+(ok2?'✅':'❌')+'</div>'+
+      '<div style="font-size:1rem">'+(a.ok?'✅':'❌')+'</div>'+
       '<div style="flex:1">'+
-        '<div class="rev-q">'+q.text+'</div>'+
-        (!ok2 && a ? '<div class="a-bad">Tu respuesta: '+q.opts[a.chosen]+'</div>' : '')+
-        '<div class="a-ok">Correcta: '+q.opts[q.ans]+'</div>'+
+        '<div style="font-size:.82rem;line-height:1.4">'+q.text+'</div>'+
+        (!a.ok ? '<div style="font-size:.75rem;color:var(--bad);margin-top:4px">Tu respuesta: '+q.opts[a.chosen]+'</div>' : '')+
+        '<div style="font-size:.75rem;color:var(--ok);margin-top:2px">Correcta: '+q.opts[q.ans]+'</div>'+
       '</div>'+
-      '<div style="font-family:\'DM Mono\',monospace;font-size:.72rem;color:var(--txt3);margin-left:8px">'+(qz.times[i]||0)+'s</div>'+
     '</div>';
   }).join('');
 
   showScreen('screen-res');
-  setTimeout(function(){ document.querySelectorAll('.t-fill').forEach(function(el){ el.style.width = el.dataset.p+'%'; }); }, 300);
 }
 
+/* LISTENERS */
 gel('btn-start').addEventListener('click', openConfig);
 gel('cfg-back').addEventListener('click', function(){ showScreen('screen-dash'); refreshDash(); });
 gel('btn-quiz-start').addEventListener('click', startQuiz);
-gel('btn-next').addEventListener('click', nextQ);
+gel('btn-next').addEventListener('click', function(){
+  if(S.quiz.current >= S.quiz.questions.length-1) finishQuiz();
+  else { S.quiz.current++; renderQ(); }
+});
 gel('btn-dash').addEventListener('click', function(){ showScreen('screen-dash'); refreshDash(); });
 gel('btn-retry').addEventListener('click', openConfig);
 
-setupPills('qty-pills','qty');
-setupPills('diff-pills','diff');
-setupModes();
+// Pills logic
+document.querySelectorAll('.pills').forEach(function(cont){
+  cont.addEventListener('click', function(e){
+    var p = e.target.closest('.pill');
+    if(!p) return;
+    cont.querySelectorAll('.pill').forEach(function(x){ x.classList.remove('on'); });
+    p.classList.add('on');
+    var key = cont.id === 'qty-pills' ? 'qty' : 'diff';
+    S.cfg[key] = key==='qty' ? parseInt(p.dataset.val) : p.dataset.val;
+  });
+});
+
+// Mode logic
+document.querySelectorAll('.mode-card').forEach(function(m){
+  m.addEventListener('click', function(){
+    document.querySelectorAll('.mode-card').forEach(function(x){ x.classList.remove('on'); });
+    m.classList.add('on');
+    S.cfg.mode = m.dataset.val;
+  });
+});
 
 buildSubjGrid();
 refreshDash();
